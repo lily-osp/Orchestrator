@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orchestrator Platform Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 30px rgba(255, 107, 107, 0.5)); }
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
+        
+        .status-banner {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+        
+        .status-banner.demo {
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(78, 205, 196, 0.2));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .demo-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .info-card h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .info-card li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .info-card li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .demo-section h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .demo-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-item h4 {
+            color: #4ecdc4;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-left: 4px solid #00d4ff;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn.secondary {
+            background: linear-gradient(45deg, #4ecdc4, #45b7aa);
+        }
+        
+        .btn.danger {
+            background: linear-gradient(45deg, #ff6b6b, #cc5555);
+        }
+        
+        .architecture-diagram {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .layer {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid;
+        }
+        
+        .layer.ui { border-left-color: #ff6b6b; }
+        .layer.control { border-left-color: #4ecdc4; }
+        .layer.mqtt { border-left-color: #00d4ff; }
+        .layer.hal { border-left-color: #ffa726; }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .demo-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Orchestrator Platform</h1>
+            <p class="subtitle">Mock Hardware Abstraction Layer Demo</p>
+        </div>
+        
+        <div class="status-banner demo">
+            <h2>🎉 Mock HAL System Ready!</h2>
+            <p>The complete mock hardware simulation is running and ready for development</p>
+        </div>
+        
+        <div class="demo-info">
+            <div class="info-card">
+                <h3>🚀 What's Running</h3>
+                <ul>
+                    <li>Mock Motor Controllers</li>
+                    <li>Simulated Encoders</li>
+                    <li>Virtual LiDAR Scanner</li>
+                    <li>Safety Monitor</li>
+                    <li>State Manager</li>
+                    <li>MQTT Communication</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h3>📊 Simulation Features</h3>
+                <ul>
+                    <li>Realistic Physics</li>
+                    <li>Sensor Noise & Drift</li>
+                    <li>Motor Dynamics</li>
+                    <li>Obstacle Detection</li>
+                    <li>Real-time Telemetry</li>
+                    <li>Command Processing</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h3>🌐 Access Points</h3>
+                <ul>
+                    <li>MQTT: localhost:1883</li>
+                    <li>Node-RED: :1880</li>
+                    <li>Dashboard: :1880/ui</li>
+                    <li>API: :1880/api</li>
+                    <li>Web UI: :5000</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🏗️ System Architecture</h2>
+            <div class="architecture-diagram">
+                <div class="layer ui">
+                    <strong>Layer 4: User Interface</strong><br>
+                    Node-RED Dashboard, Web UI, Mobile Apps
+                </div>
+                <div class="layer control">
+                    <strong>Layer 3: Control Logic</strong><br>
+                    Node-RED Flows, Mission Sequencer, Safety Logic
+                </div>
+                <div class="layer mqtt">
+                    <strong>Layer 2: Communication</strong><br>
+                    MQTT Broker, Message Routing, Topic Management
+                </div>
+                <div class="layer hal">
+                    <strong>Layer 1: Hardware Abstraction</strong><br>
+                    Mock HAL, Sensor Simulation, Motor Control
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🎮 Quick Start Options</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h4>🌐 Node-RED Dashboard</h4>
+                    <p>Full-featured web interface with visual programming</p>
+                    <div class="code-block">http://localhost:1880/ui</div>
+                    <a href="http://localhost:1880/ui" class="btn" target="_blank">Open Dashboard</a>
+                </div>
+                
+                <div class="demo-item">
+                    <h4>🔧 Flow Editor</h4>
+                    <p>Visual programming interface for creating robot behaviors</p>
+                    <div class="code-block">http://localhost:1880</div>
+                    <a href="http://localhost:1880" class="btn secondary" target="_blank">Open Editor</a>
+                </div>
+                
+                <div class="demo-item">
+                    <h4>📡 MQTT Testing</h4>
+                    <p>Direct MQTT communication for testing</p>
+                    <div class="code-block">mosquitto_pub -h localhost -t 'orchestrator/cmd/left_motor' -m '{"action":"move_forward","parameters":{"distance":1.0}}'</div>
+                </div>
+                
+                <div class="demo-item">
+                    <h4>🐍 Python Integration</h4>
+                    <p>Programmatic control via Python</p>
+                    <div class="code-block">python3 demos/standalone_demo.py</div>
+                    <button class="btn" onclick="runDemo()">Run Demo</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🎯 Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Realistic Simulation</h3>
+                    <p>Physics-based robot behavior with differential drive kinematics</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📡</div>
+                    <h3>MQTT Interface</h3>
+                    <p>Complete MQTT API compatibility for seamless integration</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>LiDAR Simulation</h3>
+                    <p>360° laser scanning with obstacles and environmental mapping</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-time Telemetry</h3>
+                    <p>Live sensor data streaming with configurable update rates</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Safety Systems</h3>
+                    <p>Emergency stop, obstacle detection, and safety monitoring</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎛️</div>
+                    <h3>Easy Control</h3>
+                    <p>Intuitive web interface for robot operation and monitoring</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>📋 MQTT Topics Reference</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h4>📤 Command Topics</h4>
+                    <div class="code-block">orchestrator/cmd/left_motor
+orchestrator/cmd/right_motor
+orchestrator/cmd/estop</div>
+                </div>
+                
+                <div class="demo-item">
+                    <h4>📥 Data Topics</h4>
+                    <div class="code-block">orchestrator/data/left_encoder
+orchestrator/data/right_encoder
+orchestrator/data/lidar_01
+orchestrator/data/left_motor
+orchestrator/data/right_motor</div>
+                </div>
+                
+                <div class="demo-item">
+                    <h4>📊 Status Topics</h4>
+                    <div class="code-block">orchestrator/status/robot
+orchestrator/status/safety_monitor
+orchestrator/status/system
+orchestrator/status/hal</div>
+                </div>
+                
+                <div class="demo-item">
+                    <h4>✅ Acknowledgment Topics</h4>
+                    <div class="code-block">orchestrator/ack/left_motor
+orchestrator/ack/right_motor
+orchestrator/ack/estop</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <h3>🎉 Mock HAL System Active</h3>
+            <p>Ready for UI development, testing, and demonstration</p>
+            <p class="pulse">System Status: <span style="color: #4ecdc4;">🟢 Online</span></p>
+        </div>
+    </div>
+    
+    <script>
+        function runDemo() {
+            alert('🚀 Demo would run the standalone Python demo.\n\nTo run manually:\npython3 demos/standalone_demo.py');
+        }
+        
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const cards = document.querySelectorAll('.info-card, .feature-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+            
+            // Update timestamp
+            function updateTime() {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString();
+                document.title = `Orchestrator Platform - ${timeStr}`;
+            }
+            
+            setInterval(updateTime, 1000);
+            updateTime();
+        });
+    </script>
+</body>
+</html>

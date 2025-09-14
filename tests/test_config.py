@@ -105,8 +105,10 @@ class TestConfigurationService:
         """Create a test configuration dictionary."""
         return {
             "system": {
-                "log_level": "DEBUG",
-                "log_format": "json"
+                "logging": {
+                    "level": "DEBUG",
+                    "format": "json"
+                }
             },
             "mqtt": {
                 "broker_host": "localhost",
@@ -154,7 +156,7 @@ class TestConfigurationService:
             config = service.load_config()
             
             assert isinstance(config, OrchestratorConfig)
-            assert config.system.log_level == "DEBUG"
+            assert config.system.logging.level == "DEBUG"
             assert config.mqtt.broker_host == "localhost"
             assert len(config.motors) == 1
             assert config.motors[0].name == "test_motor"
@@ -352,7 +354,7 @@ class TestGlobalConfigService:
     def test_load_config_convenience_function(self):
         """Test the load_config convenience function."""
         config_data = {
-            "system": {"log_level": "INFO"},
+            "system": {"logging": {"level": "INFO"}},
             "mqtt": {"broker_host": "localhost"}
         }
         
@@ -367,7 +369,7 @@ class TestGlobalConfigService:
             
             config = load_config(config_path)
             assert isinstance(config, OrchestratorConfig)
-            assert config.system.log_level == "INFO"
+            assert config.system.logging.level == "INFO"
         finally:
             Path(config_path).unlink()
 

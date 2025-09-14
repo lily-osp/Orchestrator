@@ -14,7 +14,7 @@ def test_project_structure():
     """Test that required project directories exist."""
     base_dir = os.path.dirname(os.path.dirname(__file__))
     
-    required_dirs = ['hal_service', 'node_red_config', 'docs', 'tests']
+    required_dirs = ['hal_service', 'configs/node_red_config', 'docs', 'tests']
     
     for directory in required_dirs:
         dir_path = os.path.join(base_dir, directory)

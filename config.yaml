@@ -1,0 +1,56 @@
+motors:
+- acceleration: 0.5
+  encoder_pins:
+    a: 20
+    b: 21
+  gpio_pins:
+    direction: 19
+    enable: 18
+  max_speed: 1.0
+  name: left_motor
+  type: dc
+- acceleration: 0.5
+  encoder_pins:
+    a: 24
+    b: 25
+  gpio_pins:
+    direction: 23
+    enable: 22
+  max_speed: 1.0
+  name: right_motor
+  type: dc
+mqtt:
+  broker_host: ${MQTT_HOST:localhost}
+  broker_port: 1883
+  keepalive: 60
+  qos_commands: 1
+  qos_telemetry: 0
+safety:
+  emergency_stop_timeout: 0.1
+  enabled: true
+  obstacle_threshold: 0.5
+sensors:
+- interface:
+    baudrate: 115200
+    port: /dev/ttyUSB0
+    timeout: 1.0
+  name: lidar_01
+  publish_rate: 10.0
+  type: lidar
+- interface:
+    mode: IN
+    pin: 20
+    pull_up_down: PUD_UP
+  name: left_encoder
+  publish_rate: 20.0
+  type: encoder
+system:
+  heartbeat_interval: 30.0
+  logging:
+    backup_count: 5
+    console_output: true
+    file_output: true
+    format: json
+    level: INFO
+    log_dir: logs
+    max_log_size: 10485760

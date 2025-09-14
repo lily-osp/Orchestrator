@@ -13,10 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Python 3.8
+    - name: Set up Python 3.13
       uses: actions/setup-python@v4
       with:
-        python-version: '3.8'
+        python-version: '3.13'
     
     - name: Install dependencies
       run: |
@@ -31,9 +31,13 @@ jobs:
         # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 hal_service/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     
-    - name: Test with pytest
+    - name: Run unit tests
       run: |
-        pytest tests/ --cov=hal_service --cov-report=xml
+        pytest tests/ -m "not integration" --cov=hal_service --cov-report=xml -v
+    
+    - name: Run integration tests
+      run: |
+        pytest tests/ -m "integration" -v
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

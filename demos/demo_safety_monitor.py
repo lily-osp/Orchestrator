@@ -14,7 +14,7 @@ from pathlib import Path
 import sys
 
 # Add hal_service to Python path
-sys.path.insert(0, str(Path(__file__).parent / "hal_service"))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from hal_service.mqtt_client import MQTTClientWrapper, MQTTConfig

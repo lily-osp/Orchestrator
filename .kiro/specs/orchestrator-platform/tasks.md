@@ -161,7 +161,7 @@ This document provides a detailed, phased breakdown of all tasks required to imp
 ### **Phase 4: Testing, Deployment & Documentation (Sprint 7-8)**
 **Goal:** Ensure the system is robust, reliable, and maintainable through comprehensive testing and clear documentation.
 
-- [ ] **17. Create Hardware Simulation (Mock HAL) (TST-01)**
+- [x] **17. Create Hardware Simulation (Mock HAL) (TST-01)**
   - Build a mock Python library that mimics the HAL's MQTT interface.
   - This will simulate fake sensor data and acknowledge commands, allowing for UI/control development without physical hardware.
   - **Priority:** High
@@ -169,7 +169,7 @@ This document provides a detailed, phased breakdown of all tasks required to imp
   - **Dependencies:** Phase 1, Phase 2
   - *Requirements: 1.4, 6.2*
 
-- [ ] **18. Write Unit & Integration Tests (TST-02)**
+- [x] **18. Write Unit & Integration Tests (TST-02)**
   - Write `pytest` unit tests for all individual HAL classes.
   - Create integration tests that validate the full command loop (MQTT -> HAL -> MQTT).
   - Add these tests to the CI pipeline from FND-01.
