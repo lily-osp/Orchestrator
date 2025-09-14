@@ -1,0 +1,31 @@
+[Unit]
+Description=Node-RED for Orchestrator Platform
+Documentation=http://nodered.org/docs/
+After=network.target mosquitto.service
+Wants=mosquitto.service
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/orchestrator-platform/configs/node_red_config
+Environment="NODE_OPTIONS=--max_old_space_size=512"
+Environment="NODE_RED_HOME=/home/pi/orchestrator-platform/configs/node_red_config"
+ExecStart=/usr/local/bin/node-red --settings /home/pi/orchestrator-platform/configs/node_red_config/settings.js
+Restart=on-failure
+RestartSec=20
+KillMode=mixed
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=node-red-orchestrator
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/pi/orchestrator-platform/configs/node_red_config
+ReadWritePaths=/tmp
+
+[Install]
+WantedBy=multi-user.target

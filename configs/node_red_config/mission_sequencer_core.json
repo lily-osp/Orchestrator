@@ -1,0 +1,86 @@
+[
+  {
+    "id": "mission-cmd-listener",
+    "type": "mqtt in",
+    "z": "mission-sequencer-tab",
+    "name": "Mission Command Listener",
+    "topic": "orchestrator/cmd/mission",
+    "qos": "1",
+    "datatype": "json",
+    "broker": "mqtt-broker-config",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 200,
+    "wires": [
+      [
+        "mission-state-manager"
+      ]
+    ]
+  },
+  {
+    "id": "mission-state-manager",
+    "type": "function",
+    "z": "mission-sequencer-tab",
+    "name": "Mission State Manager",
+    "func": "// Manage mission execution state\nconst command = msg.payload;\nconst action = command.action;\n\n// Get current mission state\nlet missionState = flow.get('mission_state') || 'idle';\nlet currentMission = flow.get('current_mission');\nlet currentStep = flow.get('current_step') || 0;\n\nnode.log(`Mission command received: ${action}, current state: ${missionState}`);\n\nswitch (action) {\n    case 'start_mission':\n        if (!currentMission) {\n            node.error('No mission loaded');\n            return null;\n        }\n        \n        if (missionState === 'loaded' || missionState === 'paused' || missionState === 'completed' || missionState === 'failed') {\n            flow.set('mission_state', 'in_progress');\n            flow.set('current_step', 0);\n            flow.set('step_start_time', Date.now());\n            \n            // Start executing the first step\n            const firstStep = currentMission.sequence[0];\n            const executeMsg = {\n                topic: 'execute_step',\n                payload: {\n                    step: firstStep,\n                    step_number: 0,\n                    mission_id: currentMission.mission_id\n                }\n            };\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'in_progress',\n                    current_step: 0,\n                    total_steps: currentMission.sequence.length,\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, executeMsg];\n        }\n        break;\n        \n    case 'pause_mission':\n        if (missionState === 'in_progress') {\n            flow.set('mission_state', 'paused');\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'paused',\n                    current_step: currentStep,\n                    total_steps: currentMission.sequence.length,\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, null];\n        }\n        break;\n        \n    case 'stop_mission':\n        if (missionState === 'in_progress' || missionState === 'paused') {\n            flow.set('mission_state', 'stopped');\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'stopped',\n                    current_step: currentStep,\n                    total_steps: currentMission.sequence.length,\n                    reason: 'user_stop',\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, null];\n        }\n        break;\n        \n    case 'reset_mission':\n        flow.set('mission_state', 'loaded');\n        flow.set('current_step', 0);\n        flow.set('step_start_time', null);\n        \n        const statusMsg = {\n            topic: 'orchestrator/status/mission',\n            payload: {\n                mission_id: currentMission ? currentMission.mission_id : 'none',\n                status: 'loaded',\n                current_step: 0,\n                total_steps: currentMission ? currentMission.sequence.length : 0,\n                timestamp: new Date().toISOString()\n            }\n        };\n        \n        return [statusMsg, null];\n}\n\nreturn null;",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 200,
+    "wires": [
+      [
+        "mission-status-publisher"
+      ],
+      [
+        "step-executor"
+      ]
+    ]
+  },
+  {
+    "id": "step-executor",
+    "type": "function",
+    "z": "mission-sequencer-tab",
+    "name": "Step Executor",
+    "func": "// Execute individual mission steps\nif (msg.topic === 'execute_step') {\n    const stepData = msg.payload;\n    const step = stepData.step;\n    const stepNumber = stepData.step_number;\n    \n    node.log(`Executing step ${stepNumber + 1}: ${step.action}`);\n    \n    // Create command message based on step action\n    let commandMsg = null;\n    \n    switch (step.action) {\n        case 'move_forward':\n        case 'move_backward':\n        case 'rotate_left':\n        case 'rotate_right':\n        case 'stop':\n            commandMsg = {\n                topic: 'orchestrator/cmd/motors',\n                payload: {\n                    action: step.action,\n                    parameters: step.parameters || {},\n                    timestamp: new Date().toISOString(),\n                    command_id: msg._msgid,\n                    mission_step: stepNumber,\n                    mission_id: stepData.mission_id\n                }\n            };\n            break;\n            \n        case 'wait':\n            const waitTime = step.parameters ? step.parameters.duration || 1000 : 1000;\n            \n            setTimeout(() => {\n                const nextStepMsg = {\n                    topic: 'step_completed',\n                    payload: {\n                        step_number: stepNumber,\n                        mission_id: stepData.mission_id,\n                        success: true\n                    }\n                };\n                node.send(nextStepMsg);\n            }, waitTime);\n            \n            return null;\n    }\n    \n    if (commandMsg) {\n        const timeout = step.timeout * 1000;\n        \n        setTimeout(() => {\n            const currentStep = flow.get('current_step');\n            const missionState = flow.get('mission_state');\n            \n            if (currentStep === stepNumber && missionState === 'in_progress') {\n                const timeoutMsg = {\n                    topic: 'step_timeout',\n                    payload: {\n                        step_number: stepNumber,\n                        mission_id: stepData.mission_id,\n                        timeout: step.timeout\n                    }\n                };\n                node.send(timeoutMsg);\n            }\n        }, timeout);\n        \n        return commandMsg;\n    }\n}\n\n// Handle step completion\nif (msg.topic === 'step_completed') {\n    const completionData = msg.payload;\n    const stepNumber = completionData.step_number;\n    const success = completionData.success;\n    \n    const currentMission = flow.get('current_mission');\n    const missionState = flow.get('mission_state');\n    \n    if (missionState !== 'in_progress') {\n        return null;\n    }\n    \n    if (success) {\n        const nextStep = stepNumber + 1;\n        \n        if (nextStep < currentMission.sequence.length) {\n            flow.set('current_step', nextStep);\n            flow.set('step_start_time', Date.now());\n            \n            const nextStepData = currentMission.sequence[nextStep];\n            const executeMsg = {\n                topic: 'execute_step',\n                payload: {\n                    step: nextStepData,\n                    step_number: nextStep,\n                    mission_id: currentMission.mission_id\n                }\n            };\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'in_progress',\n                    current_step: nextStep,\n                    total_steps: currentMission.sequence.length,\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, executeMsg];\n        } else {\n            flow.set('mission_state', 'completed');\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'completed',\n                    current_step: stepNumber,\n                    total_steps: currentMission.sequence.length,\n                    reason: 'mission_completed',\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, null];\n        }\n    }\n}\n\nreturn null;",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 650,
+    "y": 200,
+    "wires": [
+      [
+        "mission-status-publisher"
+      ],
+      [
+        "motor-mqtt-publisher",
+        "step-executor"
+      ]
+    ]
+  },
+  {
+    "id": "mission-status-publisher",
+    "type": "mqtt out",
+    "z": "mission-sequencer-tab",
+    "name": "Mission Status Publisher",
+    "topic": "orchestrator/status/mission",
+    "qos": "1",
+    "retain": "true",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "mqtt-broker-config",
+    "x": 680,
+    "y": 100,
+    "wires": []
+  }
+]

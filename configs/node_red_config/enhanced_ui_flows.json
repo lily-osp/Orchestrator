@@ -1,0 +1,129 @@
+[
+    {
+        "id": "mqtt-broker-config",
+        "type": "mqtt-broker",
+        "name": "Orchestrator MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node-red-orchestrator",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "orchestrator/status/nodered",
+        "birthQos": "1",
+        "birthRetain": "false",
+        "birthPayload": "{\"status\":\"online\",\"timestamp\":\"{{timestamp}}\"}",
+        "birthMsg": {},
+        "closeTopic": "orchestrator/status/nodered",
+        "closeQos": "1",
+        "closeRetain": "false",
+        "closePayload": "{\"status\":\"offline\",\"timestamp\":\"{{timestamp}}\"}",
+        "closeMsg": {},
+        "willTopic": "orchestrator/status/nodered",
+        "willQos": "1",
+        "willRetain": "false",
+        "willPayload": "{\"status\":\"disconnected\",\"timestamp\":\"{{timestamp}}\"}",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "dashboard-ui-config",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#1a1a2e",
+                "baseColor": "#1a1a2e",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Orchestrator Glassmorphism",
+                "default": "#1a1a2e",
+                "baseColor": "#1a1a2e",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#1a1a2e",
+                    "value": "#1a1a2e",
+                    "edited": true
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "rgba(26, 26, 46, 0.95)",
+                    "edited": true
+                },
+                "page-backgroundColor": {
+                    "value": "linear-gradient(135deg, #0c0c1d 0%, #1a1a2e 50%, #16213e 100%)",
+                    "edited": true
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "rgba(22, 33, 62, 0.8)",
+                    "edited": true
+                },
+                "group-textColor": {
+                    "value": "#e0e6ed",
+                    "edited": true
+                },
+                "group-borderColor": {
+                    "value": "rgba(255, 255, 255, 0.1)",
+                    "edited": true
+                },
+                "group-backgroundColor": {
+                    "value": "rgba(255, 255, 255, 0.05)",
+                    "edited": true
+                },
+                "widget-textColor": {
+                    "value": "#ffffff",
+                    "edited": true
+                },
+                "widget-backgroundColor": {
+                    "value": "rgba(255, 255, 255, 0.1)",
+                    "edited": true
+                },
+                "widget-borderColor": {
+                    "value": "rgba(255, 255, 255, 0.2)",
+                    "edited": true
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "colours"
+            }
+        },
+        "site": {
+            "name": "🤖 Orchestrator Platform",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY HH:mm:ss",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 2,
+                "py": 2
+            }
+        }
+    }
+]

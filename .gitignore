@@ -47,9 +47,18 @@ coverage.xml
 .hypothesis/
 
 # Node-RED
-node_red_config/node_modules/
-node_red_config/.config.json
-node_red_config/flows_cred.json
+configs/node_red_config/node_modules/
+configs/node_red_config/.config.json
+configs/node_red_config/flows_cred.json
+configs/node_red_config/.flows.json.backup
+configs/node_red_config/flows_*.json.backup
+configs/node_red_config/.sessions.json
+configs/node_red_config/lib/
+configs/node_red_config/.npm/
+configs/node_red_config/package-lock.json
+configs/node_red_config/npm-debug.log*
+configs/node_red_config/yarn-debug.log*
+configs/node_red_config/yarn-error.log*
 
 # Hardware specific
 *.log

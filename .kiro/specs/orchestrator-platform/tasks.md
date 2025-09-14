@@ -115,7 +115,7 @@ This document provides a detailed, phased breakdown of all tasks required to imp
 ### **Phase 3: Control Layer & User Interface (Sprint 5-6)**
 **Goal:** Build the Node-RED flows and web dashboard for user control and monitoring.
 
-- [ ] **12. Setup Node-RED Environment (CTL-01)**
+- [x] **12. Setup Node-RED Environment (CTL-01)**
   - Install Node-RED and the `node-red-dashboard` plugin.
   - Configure the MQTT broker connection nodes.
   - **Priority:** High
@@ -123,7 +123,7 @@ This document provides a detailed, phased breakdown of all tasks required to imp
   - **Dependencies:** FND-03
   - *Requirements: 3.1, 3.3*
 
-- [ ] **13. Build Node-RED Command Flows (CTL-02)**
+- [x] **13. Build Node-RED Command Flows (CTL-02)**
   - Create flows that translate UI actions (button clicks, slider inputs) into formatted MQTT JSON commands.
   - Implement input validation for all command parameters within the flows.
   - **Priority:** High
@@ -131,7 +131,7 @@ This document provides a detailed, phased breakdown of all tasks required to imp
   - **Dependencies:** CTL-01, STA-01
   - *Requirements: 3.1, 3.3, 7.1*
 
-- [ ] **14. Build Node-RED Telemetry Flows (CTL-03)**
+- [x] **14. Build Node-RED Telemetry Flows (CTL-03)**
   - Create flows that subscribe to all `.../data/*` and `.../status/*` topics.
   - Process and format incoming data for display in the various dashboard widgets.
   - **Priority:** High
@@ -139,7 +139,7 @@ This document provides a detailed, phased breakdown of all tasks required to imp
   - **Dependencies:** CTL-01, STA-01
   - *Requirements: 3.4, 4.4, 2.2*
 
-- [ ] **15. Develop Web Dashboard UI (CTL-04)**
+- [x] **15. Develop Web Dashboard UI (CTL-04)**
   - Design and build the dashboard UI with a dark theme and `glassmorphism` elements.
   - Add controls (Start, Stop, E-Stop), status displays (position, logs), and mission parameters.
   - Implement a real-time LiDAR visualization canvas.
@@ -148,7 +148,7 @@ This document provides a detailed, phased breakdown of all tasks required to imp
   - **Dependencies:** CTL-02, CTL-03
   - *Requirements: 4.1, 4.2, 4.3, 4.4*
 
-- [ ] **16. Implement Mission Sequencer Flow (CTL-05)**
+- [x] **16. Implement Mission Sequencer Flow (CTL-05)**
   - Create a complex flow that can execute a sequence of commands from a JSON array input.
   - This flow will manage the mission state (`in_progress`, `completed`, `failed`) and step progression.
   - **Priority:** Medium

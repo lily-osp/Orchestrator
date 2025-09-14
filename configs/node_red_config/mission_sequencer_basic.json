@@ -1,0 +1,32 @@
+[
+  {
+    "id": "mission-sequencer-tab",
+    "type": "tab",
+    "label": "Mission Sequencer",
+    "disabled": false,
+    "info": "Mission sequencer flow that executes sequences of commands from JSON array input and manages mission state",
+    "env": []
+  },
+  {
+    "id": "ui-group-mission-sequencer",
+    "type": "ui_group",
+    "name": "Mission Sequencer",
+    "tab": "ui-tab-control",
+    "order": 5,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-group-mission-status",
+    "type": "ui_group",
+    "name": "Mission Status",
+    "tab": "ui-tab-control",
+    "order": 6,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  }
+]

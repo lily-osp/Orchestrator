@@ -1,0 +1,26 @@
+{
+    "name": "orchestrator-node-red-config",
+    "version": "1.0.0",
+    "description": "Node-RED configuration for Orchestrator robotics platform",
+    "main": "settings.js",
+    "scripts": {
+        "start": "node-red --settings ./settings.js",
+        "dev": "node-red --settings ./settings.js --verbose"
+    },
+    "keywords": [
+        "node-red",
+        "robotics",
+        "orchestrator",
+        "mqtt",
+        "iot"
+    ],
+    "author": "Orchestrator Platform",
+    "license": "MIT",
+    "dependencies": {
+        "node-red": "^3.1.0",
+        "@flowfuse/node-red-dashboard": "^1.0.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

@@ -1,0 +1,2433 @@
+[
+  {
+    "id": "mqtt-broker-config",
+    "type": "mqtt-broker",
+    "name": "Orchestrator MQTT Broker",
+    "broker": "localhost",
+    "port": "1883",
+    "clientid": "node-red-orchestrator",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "orchestrator/status/nodered",
+    "birthQos": "1",
+    "birthRetain": "false",
+    "birthPayload": "{\"status\":\"online\",\"timestamp\":\"{{timestamp}}\"}",
+    "birthMsg": {},
+    "closeTopic": "orchestrator/status/nodered",
+    "closeQos": "1",
+    "closeRetain": "false",
+    "closePayload": "{\"status\":\"offline\",\"timestamp\":\"{{timestamp}}\"}",
+    "closeMsg": {},
+    "willTopic": "orchestrator/status/nodered",
+    "willQos": "1",
+    "willRetain": "false",
+    "willPayload": "{\"status\":\"disconnected\",\"timestamp\":\"{{timestamp}}\"}",
+    "willMsg": {},
+    "sessionExpiry": ""
+  },
+  {
+    "id": "dashboard-ui-config",
+    "type": "ui_base",
+    "theme": {
+      "name": "theme-dark",
+      "lightTheme": {
+        "default": "#0094CE",
+        "baseColor": "#0094CE",
+        "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+        "edited": true,
+        "reset": false
+      },
+      "darkTheme": {
+        "default": "#1a1a2e",
+        "baseColor": "#1a1a2e",
+        "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+        "edited": true,
+        "reset": false
+      },
+      "customTheme": {
+        "name": "Orchestrator Glassmorphism",
+        "default": "#1a1a2e",
+        "baseColor": "#1a1a2e",
+        "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+      },
+      "themeState": {
+        "base-color": {
+          "default": "#1a1a2e",
+          "value": "#1a1a2e",
+          "edited": true
+        },
+        "page-titlebar-backgroundColor": {
+          "value": "rgba(26, 26, 46, 0.95)",
+          "edited": true
+        },
+        "page-backgroundColor": {
+          "value": "#0c0c1d",
+          "edited": true
+        },
+        "page-sidebar-backgroundColor": {
+          "value": "rgba(22, 33, 62, 0.8)",
+          "edited": true
+        },
+        "group-textColor": {
+          "value": "#e0e6ed",
+          "edited": true
+        },
+        "group-borderColor": {
+          "value": "rgba(255, 255, 255, 0.1)",
+          "edited": true
+        },
+        "group-backgroundColor": {
+          "value": "rgba(255, 255, 255, 0.05)",
+          "edited": true
+        },
+        "widget-textColor": {
+          "value": "#ffffff",
+          "edited": true
+        },
+        "widget-backgroundColor": {
+          "value": "rgba(255, 255, 255, 0.1)",
+          "edited": true
+        },
+        "widget-borderColor": {
+          "value": "rgba(255, 255, 255, 0.2)",
+          "edited": true
+        },
+        "base-font": {
+          "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+        }
+      },
+      "angularTheme": {
+        "primary": "indigo",
+        "accents": "blue",
+        "warn": "red",
+        "background": "grey",
+        "palette": "colours"
+      }
+    },
+    "site": {
+      "name": "\ud83e\udd16 Orchestrator Platform",
+      "hideToolbar": "false",
+      "allowSwipe": "false",
+      "lockMenu": "false",
+      "allowTempTheme": "true",
+      "dateFormat": "DD/MM/YYYY HH:mm:ss",
+      "sizes": {
+        "sx": 48,
+        "sy": 48,
+        "gx": 6,
+        "gy": 6,
+        "cx": 6,
+        "cy": 6,
+        "px": 2,
+        "py": 2
+      }
+    }
+  },
+  {
+    "id": "ui-group-motor-control",
+    "type": "ui_group",
+    "name": "Motor Control",
+    "tab": "ui-tab-control",
+    "order": 1,
+    "disp": true,
+    "width": "6",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-group-mission-control",
+    "type": "ui_group",
+    "name": "Mission Control",
+    "tab": "ui-tab-control",
+    "order": 2,
+    "disp": true,
+    "width": "6",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-group-emergency",
+    "type": "ui_group",
+    "name": "Emergency Controls",
+    "tab": "ui-tab-control",
+    "order": 3,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-tab-control",
+    "type": "ui_tab",
+    "name": "Robot Control",
+    "icon": "dashboard",
+    "order": 1,
+    "disabled": false,
+    "hidden": false
+  },
+  {
+    "id": "main-flow-tab",
+    "type": "tab",
+    "label": "Orchestrator Main Flow",
+    "disabled": false,
+    "info": "Main flow for orchestrator platform MQTT communication and control logic",
+    "env": []
+  },
+  {
+    "id": "command-flows-tab",
+    "type": "tab",
+    "label": "Command Flows",
+    "disabled": false,
+    "info": "UI command translation flows that convert dashboard actions to MQTT commands",
+    "env": []
+  },
+  {
+    "id": "command-test-tab",
+    "type": "tab",
+    "label": "Command Testing",
+    "disabled": false,
+    "info": "Test flows for validating command generation and MQTT publishing",
+    "env": []
+  },
+  {
+    "id": "mqtt-status-node",
+    "type": "mqtt out",
+    "z": "main-flow-tab",
+    "name": "MQTT Status Publisher",
+    "topic": "orchestrator/status/system",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "mqtt-broker-config",
+    "x": 400,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "system-status-inject",
+    "type": "inject",
+    "z": "main-flow-tab",
+    "name": "System Heartbeat",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "orchestrator/status/system",
+    "payload": "{\"status\":\"active\",\"timestamp\":\"{{timestamp}}\",\"component\":\"node-red\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "mqtt-status-node"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-cmd-listener",
+    "type": "mqtt in",
+    "z": "main-flow-tab",
+    "name": "Command Listener",
+    "topic": "orchestrator/cmd/+",
+    "qos": "1",
+    "datatype": "json",
+    "broker": "mqtt-broker-config",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 200,
+    "wires": [
+      [
+        "command-processor"
+      ]
+    ]
+  },
+  {
+    "id": "command-processor",
+    "type": "function",
+    "z": "main-flow-tab",
+    "name": "Command Processor",
+    "func": "// Process incoming MQTT commands\n// This is a placeholder for command processing logic\n\nconst command = msg.payload;\nconst topic = msg.topic;\n\n// Log the received command\nnode.log(`Received command on ${topic}: ${JSON.stringify(command)}`);\n\n// Extract component from topic (orchestrator/cmd/motors -> motors)\nconst component = topic.split('/').pop();\n\n// Add metadata to the message\nmsg.component = component;\nmsg.timestamp = new Date().toISOString();\n\n// Forward the processed command\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 200,
+    "wires": [
+      [
+        "command-debug"
+      ]
+    ]
+  },
+  {
+    "id": "command-debug",
+    "type": "debug",
+    "z": "main-flow-tab",
+    "name": "Command Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "mqtt-data-listener",
+    "type": "mqtt in",
+    "z": "main-flow-tab",
+    "name": "Telemetry Listener",
+    "topic": "orchestrator/data/+",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "mqtt-broker-config",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 300,
+    "wires": [
+      [
+        "telemetry-processor"
+      ]
+    ]
+  },
+  {
+    "id": "telemetry-processor",
+    "type": "function",
+    "z": "main-flow-tab",
+    "name": "Telemetry Processor",
+    "func": "// Process incoming telemetry data\n// This is a placeholder for telemetry processing logic\n\nconst data = msg.payload;\nconst topic = msg.topic;\n\n// Log the received telemetry\nnode.log(`Received telemetry on ${topic}: ${JSON.stringify(data)}`);\n\n// Extract sensor type from topic (orchestrator/data/lidar -> lidar)\nconst sensorType = topic.split('/').pop();\n\n// Add metadata to the message\nmsg.sensorType = sensorType;\nmsg.processedAt = new Date().toISOString();\n\n// Forward the processed telemetry\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 300,
+    "wires": [
+      [
+        "telemetry-debug"
+      ]
+    ]
+  },
+  {
+    "id": "telemetry-debug",
+    "type": "debug",
+    "z": "main-flow-tab",
+    "name": "Telemetry Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "ui-move-forward-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Move Forward",
+    "group": "ui-group-motor-control",
+    "order": 1,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Forward",
+    "tooltip": "Move robot forward",
+    "color": "",
+    "bgcolor": "",
+    "className": "glass-button",
+    "icon": "arrow_upward",
+    "payload": "{\"action\":\"move_forward\"}",
+    "payloadType": "json",
+    "topic": "motor_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "motor-distance-input"
+      ]
+    ]
+  },
+  {
+    "id": "ui-move-backward-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Move Backward",
+    "group": "ui-group-motor-control",
+    "order": 2,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Backward",
+    "tooltip": "Move robot backward",
+    "color": "",
+    "bgcolor": "",
+    "className": "glass-button",
+    "icon": "arrow_downward",
+    "payload": "{\"action\":\"move_backward\"}",
+    "payloadType": "json",
+    "topic": "motor_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 140,
+    "wires": [
+      [
+        "motor-distance-input"
+      ]
+    ]
+  },
+  {
+    "id": "ui-rotate-left-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Rotate Left",
+    "group": "ui-group-motor-control",
+    "order": 3,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Left",
+    "tooltip": "Rotate robot left",
+    "color": "",
+    "bgcolor": "",
+    "className": "glass-button",
+    "icon": "rotate_left",
+    "payload": "{\"action\":\"rotate_left\"}",
+    "payloadType": "json",
+    "topic": "motor_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 180,
+    "wires": [
+      [
+        "motor-angle-input"
+      ]
+    ]
+  },
+  {
+    "id": "ui-rotate-right-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Rotate Right",
+    "group": "ui-group-motor-control",
+    "order": 4,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Right",
+    "tooltip": "Rotate robot right",
+    "color": "",
+    "bgcolor": "",
+    "className": "glass-button",
+    "icon": "rotate_right",
+    "payload": "{\"action\":\"rotate_right\"}",
+    "payloadType": "json",
+    "topic": "motor_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 220,
+    "wires": [
+      [
+        "motor-angle-input"
+      ]
+    ]
+  },
+  {
+    "id": "ui-motor-stop-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Motor Stop",
+    "group": "ui-group-motor-control",
+    "order": 5,
+    "width": 6,
+    "height": 1,
+    "passthru": false,
+    "label": "STOP MOTORS",
+    "tooltip": "Stop all motor movement",
+    "color": "white",
+    "bgcolor": "red",
+    "className": "glass-button",
+    "icon": "stop",
+    "payload": "{\"action\":\"stop\"}",
+    "payloadType": "json",
+    "topic": "motor_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 260,
+    "wires": [
+      [
+        "motor-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "ui-distance-slider",
+    "type": "ui_slider",
+    "z": "command-flows-tab",
+    "name": "Distance (cm)",
+    "label": "Distance (cm)",
+    "tooltip": "Set movement distance in centimeters",
+    "group": "ui-group-motor-control",
+    "order": 6,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "outs": "end",
+    "topic": "distance",
+    "topicType": "str",
+    "min": 1,
+    "max": 200,
+    "step": 1,
+    "className": "",
+    "x": 150,
+    "y": 320,
+    "wires": [
+      [
+        "parameter-storage-distance"
+      ]
+    ]
+  },
+  {
+    "id": "ui-angle-slider",
+    "type": "ui_slider",
+    "z": "command-flows-tab",
+    "name": "Angle (degrees)",
+    "label": "Angle (degrees)",
+    "tooltip": "Set rotation angle in degrees",
+    "group": "ui-group-motor-control",
+    "order": 7,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "outs": "end",
+    "topic": "angle",
+    "topicType": "str",
+    "min": 1,
+    "max": 360,
+    "step": 1,
+    "className": "",
+    "x": 150,
+    "y": 360,
+    "wires": [
+      [
+        "parameter-storage-angle"
+      ]
+    ]
+  },
+  {
+    "id": "ui-speed-slider",
+    "type": "ui_slider",
+    "z": "command-flows-tab",
+    "name": "Speed",
+    "label": "Speed (0.1-1.0)",
+    "tooltip": "Set movement speed as fraction of maximum",
+    "group": "ui-group-motor-control",
+    "order": 8,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "outs": "end",
+    "topic": "speed",
+    "topicType": "str",
+    "min": "0.1",
+    "max": "1.0",
+    "step": "0.1",
+    "className": "",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      [
+        "parameter-storage-speed"
+      ]
+    ]
+  },
+  {
+    "id": "motor-distance-input",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Add Distance Parameter",
+    "func": "// Get the current distance setting from context or use default\nconst distance = flow.get('distance') || 10;\nconst speed = flow.get('speed') || 0.5;\n\n// Add parameters to the command\nmsg.payload.parameters = {\n    distance: distance,\n    speed: speed\n};\n\n// Add command metadata\nmsg.payload.timestamp = new Date().toISOString();\nmsg.payload.command_id = msg._msgid;\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 120,
+    "wires": [
+      [
+        "motor-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "motor-angle-input",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Add Angle Parameter",
+    "func": "// Get the current angle setting from context or use default\nconst angle = flow.get('angle') || 90;\nconst speed = flow.get('speed') || 0.5;\n\n// Add parameters to the command\nmsg.payload.parameters = {\n    angle: angle,\n    speed: speed\n};\n\n// Add command metadata\nmsg.payload.timestamp = new Date().toISOString();\nmsg.payload.command_id = msg._msgid;\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 200,
+    "wires": [
+      [
+        "motor-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "motor-command-validator",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Motor Command Validator",
+    "func": "// Validate motor command parameters\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['move_forward', 'move_backward', 'rotate_left', 'rotate_right', 'stop'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid action: ${command.action}`, msg);\n    return null;\n}\n\n// Validate parameters if they exist\nif (command.parameters) {\n    const params = command.parameters;\n    \n    // Validate distance (1-200 cm)\n    if (params.distance !== undefined) {\n        if (typeof params.distance !== 'number' || params.distance < 1 || params.distance > 200) {\n            node.error(`Invalid distance: ${params.distance}. Must be between 1-200 cm`, msg);\n            return null;\n        }\n    }\n    \n    // Validate angle (1-360 degrees)\n    if (params.angle !== undefined) {\n        if (typeof params.angle !== 'number' || params.angle < 1 || params.angle > 360) {\n            node.error(`Invalid angle: ${params.angle}. Must be between 1-360 degrees`, msg);\n            return null;\n        }\n    }\n    \n    // Validate speed (0.1-1.0)\n    if (params.speed !== undefined) {\n        if (typeof params.speed !== 'number' || params.speed < 0.1 || params.speed > 1.0) {\n            node.error(`Invalid speed: ${params.speed}. Must be between 0.1-1.0`, msg);\n            return null;\n        }\n    }\n}\n\n// Add final metadata\nif (!command.timestamp) {\n    command.timestamp = new Date().toISOString();\n}\nif (!command.command_id) {\n    command.command_id = msg._msgid;\n}\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/motors';\nmsg.payload = command;\n\nnode.log(`Valid motor command: ${JSON.stringify(command)}`);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 620,
+    "y": 180,
+    "wires": [
+      [
+        "motor-mqtt-publisher"
+      ]
+    ]
+  },
+  {
+    "id": "motor-mqtt-publisher",
+    "type": "mqtt out",
+    "z": "command-flows-tab",
+    "name": "Motor Commands",
+    "topic": "orchestrator/cmd/motors",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "mqtt-broker-config",
+    "x": 860,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "ui-mission-start-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Start Mission",
+    "group": "ui-group-mission-control",
+    "order": 1,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Start",
+    "tooltip": "Start mission execution",
+    "color": "white",
+    "bgcolor": "green",
+    "className": "glass-button",
+    "icon": "play_arrow",
+    "payload": "{\"action\":\"start_mission\"}",
+    "payloadType": "json",
+    "topic": "mission_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 500,
+    "wires": [
+      [
+        "mission-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "ui-mission-pause-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Pause Mission",
+    "group": "ui-group-mission-control",
+    "order": 2,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Pause",
+    "tooltip": "Pause current mission",
+    "color": "white",
+    "bgcolor": "orange",
+    "className": "glass-button",
+    "icon": "pause",
+    "payload": "{\"action\":\"pause_mission\"}",
+    "payloadType": "json",
+    "topic": "mission_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 540,
+    "wires": [
+      [
+        "mission-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "ui-mission-stop-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Stop Mission",
+    "group": "ui-group-mission-control",
+    "order": 3,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Stop",
+    "tooltip": "Stop current mission",
+    "color": "white",
+    "bgcolor": "red",
+    "className": "glass-button",
+    "icon": "stop",
+    "payload": "{\"action\":\"stop_mission\"}",
+    "payloadType": "json",
+    "topic": "mission_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 580,
+    "wires": [
+      [
+        "mission-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "ui-mission-reset-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Reset Mission",
+    "group": "ui-group-mission-control",
+    "order": 4,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Reset",
+    "tooltip": "Reset mission to beginning",
+    "color": "",
+    "bgcolor": "",
+    "className": "glass-button",
+    "icon": "refresh",
+    "payload": "{\"action\":\"reset_mission\"}",
+    "payloadType": "json",
+    "topic": "mission_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 620,
+    "wires": [
+      [
+        "mission-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "mission-command-validator",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Mission Command Validator",
+    "func": "// Validate mission command parameters\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['start_mission', 'pause_mission', 'stop_mission', 'reset_mission'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid mission action: ${command.action}`, msg);\n    return null;\n}\n\n// Add command metadata\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/mission';\nmsg.payload = command;\n\nnode.log(`Valid mission command: ${JSON.stringify(command)}`);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 560,
+    "wires": [
+      [
+        "mission-mqtt-publisher"
+      ]
+    ]
+  },
+  {
+    "id": "mission-mqtt-publisher",
+    "type": "mqtt out",
+    "z": "command-flows-tab",
+    "name": "Mission Commands",
+    "topic": "orchestrator/cmd/mission",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "mqtt-broker-config",
+    "x": 620,
+    "y": 560,
+    "wires": []
+  },
+  {
+    "id": "ui-emergency-stop-btn",
+    "type": "ui_button",
+    "z": "command-flows-tab",
+    "name": "Emergency Stop",
+    "group": "ui-group-emergency",
+    "order": 1,
+    "width": 12,
+    "height": 2,
+    "passthru": false,
+    "label": "\ud83d\udea8 EMERGENCY STOP \ud83d\udea8",
+    "tooltip": "Immediately stop all robot operations",
+    "color": "white",
+    "bgcolor": "#CC0000",
+    "className": "emergency-stop",
+    "icon": "warning",
+    "payload": "{\"action\":\"emergency_stop\",\"reason\":\"user_initiated\"}",
+    "payloadType": "json",
+    "topic": "emergency_command",
+    "topicType": "str",
+    "x": 150,
+    "y": 700,
+    "wires": [
+      [
+        "emergency-command-validator"
+      ]
+    ]
+  },
+  {
+    "id": "emergency-command-validator",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Emergency Command Validator",
+    "func": "// Validate emergency command\nconst command = msg.payload;\n\n// Emergency commands are always valid but need proper formatting\nif (command.action !== 'emergency_stop') {\n    command.action = 'emergency_stop';\n}\n\n// Ensure reason is provided\nif (!command.reason) {\n    command.reason = 'user_initiated';\n}\n\n// Add command metadata with high priority\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\ncommand.priority = 'critical';\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/estop';\nmsg.payload = command;\n\nnode.warn(`EMERGENCY STOP ACTIVATED: ${JSON.stringify(command)}`);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 700,
+    "wires": [
+      [
+        "emergency-mqtt-publisher"
+      ]
+    ]
+  },
+  {
+    "id": "emergency-mqtt-publisher",
+    "type": "mqtt out",
+    "z": "command-flows-tab",
+    "name": "Emergency Stop",
+    "topic": "orchestrator/cmd/estop",
+    "qos": "2",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "mqtt-broker-config",
+    "x": 620,
+    "y": 700,
+    "wires": []
+  },
+  {
+    "id": "parameter-storage-distance",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Store Distance",
+    "func": "// Store distance parameter in flow context\nflow.set('distance', msg.payload);\nnode.log(`Distance set to: ${msg.payload} cm`);\nreturn null;",
+    "outputs": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "parameter-storage-angle",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Store Angle",
+    "func": "// Store angle parameter in flow context\nflow.set('angle', msg.payload);\nnode.log(`Angle set to: ${msg.payload} degrees`);\nreturn null;",
+    "outputs": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "parameter-storage-speed",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Store Speed",
+    "func": "// Store speed parameter in flow context\nflow.set('speed', msg.payload);\nnode.log(`Speed set to: ${msg.payload}`);\nreturn null;",
+    "outputs": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "test-motor-command-inject",
+    "type": "inject",
+    "z": "command-test-tab",
+    "name": "Test Motor Forward",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "motor_command",
+    "payload": "{\"action\":\"move_forward\",\"parameters\":{\"distance\":50,\"speed\":0.7}}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "test-motor-validator"
+      ]
+    ]
+  },
+  {
+    "id": "test-motor-validator",
+    "type": "function",
+    "z": "command-test-tab",
+    "name": "Test Motor Validator",
+    "func": "// This is the same validation logic as the main motor validator\n// Used for testing command validation without UI interaction\n\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['move_forward', 'move_backward', 'rotate_left', 'rotate_right', 'stop'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid action: ${command.action}`, msg);\n    return null;\n}\n\n// Validate parameters if they exist\nif (command.parameters) {\n    const params = command.parameters;\n    \n    // Validate distance (1-200 cm)\n    if (params.distance !== undefined) {\n        if (typeof params.distance !== 'number' || params.distance < 1 || params.distance > 200) {\n            node.error(`Invalid distance: ${params.distance}. Must be between 1-200 cm`, msg);\n            return null;\n        }\n    }\n    \n    // Validate angle (1-360 degrees)\n    if (params.angle !== undefined) {\n        if (typeof params.angle !== 'number' || params.angle < 1 || params.angle > 360) {\n            node.error(`Invalid angle: ${params.angle}. Must be between 1-360 degrees`, msg);\n            return null;\n        }\n    }\n    \n    // Validate speed (0.1-1.0)\n    if (params.speed !== undefined) {\n        if (typeof params.speed !== 'number' || params.speed < 0.1 || params.speed > 1.0) {\n            node.error(`Invalid speed: ${params.speed}. Must be between 0.1-1.0`, msg);\n            return null;\n        }\n    }\n}\n\n// Add final metadata\nif (!command.timestamp) {\n    command.timestamp = new Date().toISOString();\n}\nif (!command.command_id) {\n    command.command_id = msg._msgid;\n}\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/motors';\nmsg.payload = command;\n\nnode.log(`Test - Valid motor command: ${JSON.stringify(command)}`);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 100,
+    "wires": [
+      [
+        "test-command-debug"
+      ]
+    ]
+  },
+  {
+    "id": "test-invalid-command-inject",
+    "type": "inject",
+    "z": "command-test-tab",
+    "name": "Test Invalid Command",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "motor_command",
+    "payload": "{\"action\":\"invalid_action\",\"parameters\":{\"distance\":500,\"speed\":2.0}}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 140,
+    "wires": [
+      [
+        "test-motor-validator"
+      ]
+    ]
+  },
+  {
+    "id": "test-mission-command-inject",
+    "type": "inject",
+    "z": "command-test-tab",
+    "name": "Test Mission Start",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "mission_command",
+    "payload": "{\"action\":\"start_mission\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 200,
+    "wires": [
+      [
+        "test-mission-validator"
+      ]
+    ]
+  },
+  {
+    "id": "test-mission-validator",
+    "type": "function",
+    "z": "command-test-tab",
+    "name": "Test Mission Validator",
+    "func": "// Test mission command validation\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['start_mission', 'pause_mission', 'stop_mission', 'reset_mission'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid mission action: ${command.action}`, msg);\n    return null;\n}\n\n// Add command metadata\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/mission';\nmsg.payload = command;\n\nnode.log(`Test - Valid mission command: ${JSON.stringify(command)}`);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 200,
+    "wires": [
+      [
+        "test-command-debug"
+      ]
+    ]
+  },
+  {
+    "id": "test-emergency-inject",
+    "type": "inject",
+    "z": "command-test-tab",
+    "name": "Test Emergency Stop",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "emergency_command",
+    "payload": "{\"action\":\"emergency_stop\",\"reason\":\"test_scenario\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 260,
+    "wires": [
+      [
+        "test-emergency-validator"
+      ]
+    ]
+  },
+  {
+    "id": "test-emergency-validator",
+    "type": "function",
+    "z": "command-test-tab",
+    "name": "Test Emergency Validator",
+    "func": "// Test emergency command validation\nconst command = msg.payload;\n\n// Emergency commands are always valid but need proper formatting\nif (command.action !== 'emergency_stop') {\n    command.action = 'emergency_stop';\n}\n\n// Ensure reason is provided\nif (!command.reason) {\n    command.reason = 'test_initiated';\n}\n\n// Add command metadata with high priority\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\ncommand.priority = 'critical';\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/estop';\nmsg.payload = command;\n\nnode.warn(`Test - EMERGENCY STOP: ${JSON.stringify(command)}`);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 260,
+    "wires": [
+      [
+        "test-command-debug"
+      ]
+    ]
+  },
+  {
+    "id": "test-command-debug",
+    "type": "debug",
+    "z": "command-test-tab",
+    "name": "Test Command Output",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 620,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "command-validation-summary",
+    "type": "comment",
+    "z": "command-test-tab",
+    "name": "Command Validation Summary",
+    "info": "## Command Flow Validation\n\nThis tab contains test flows to validate the command generation and validation logic:\n\n### Motor Commands\n- **Valid Actions**: move_forward, move_backward, rotate_left, rotate_right, stop\n- **Distance**: 1-200 cm\n- **Angle**: 1-360 degrees  \n- **Speed**: 0.1-1.0\n\n### Mission Commands\n- **Valid Actions**: start_mission, pause_mission, stop_mission, reset_mission\n\n### Emergency Commands\n- **Action**: emergency_stop (always valid)\n- **Priority**: critical\n- **QoS**: 2 (exactly once delivery)\n\n### MQTT Topics\n- Motor: `orchestrator/cmd/motors`\n- Mission: `orchestrator/cmd/mission`\n- Emergency: `orchestrator/cmd/estop`\n\n### Message Format\n```json\n{\n  \"timestamp\": \"2024-01-15T10:30:00Z\",\n  \"command_id\": \"uuid-string\",\n  \"action\": \"move_forward\",\n  \"parameters\": {\n    \"distance\": 100,\n    \"speed\": 0.5\n  }\n}\n```",
+    "x": 150,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "telemetry-flows-tab",
+    "type": "tab",
+    "label": "Telemetry Flows",
+    "disabled": false,
+    "info": "Telemetry processing flows that subscribe to data and status topics and format for dashboard display",
+    "env": []
+  },
+  {
+    "id": "ui-group-robot-status",
+    "type": "ui_group",
+    "name": "Robot Status",
+    "tab": "ui-tab-monitoring",
+    "order": 1,
+    "disp": true,
+    "width": "6",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-group-sensor-data",
+    "type": "ui_group",
+    "name": "Sensor Data",
+    "tab": "ui-tab-monitoring",
+    "order": 2,
+    "disp": true,
+    "width": "6",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-group-lidar-display",
+    "type": "ui_group",
+    "name": "LiDAR Visualization",
+    "tab": "ui-tab-monitoring",
+    "order": 3,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-group-system-logs",
+    "type": "ui_group",
+    "name": "System Logs",
+    "tab": "ui-tab-monitoring",
+    "order": 4,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-tab-monitoring",
+    "type": "ui_tab",
+    "name": "System Monitoring",
+    "icon": "visibility",
+    "order": 2,
+    "disabled": false,
+    "hidden": false
+  },
+  {
+    "id": "mqtt-data-subscriber",
+    "type": "mqtt in",
+    "z": "telemetry-flows-tab",
+    "name": "Data Subscriber",
+    "topic": "orchestrator/data/+",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "mqtt-broker-config",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "data-router"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-status-subscriber",
+    "type": "mqtt in",
+    "z": "telemetry-flows-tab",
+    "name": "Status Subscriber",
+    "topic": "orchestrator/status/+",
+    "qos": "1",
+    "datatype": "json",
+    "broker": "mqtt-broker-config",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 200,
+    "wires": [
+      [
+        "status-router"
+      ]
+    ]
+  },
+  {
+    "id": "data-router",
+    "type": "switch",
+    "z": "telemetry-flows-tab",
+    "name": "Data Router",
+    "property": "topic",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "cont",
+        "v": "orchestrator/data/lidar",
+        "vt": "str"
+      },
+      {
+        "t": "cont",
+        "v": "orchestrator/data/encoders",
+        "vt": "str"
+      },
+      {
+        "t": "cont",
+        "v": "orchestrator/data/",
+        "vt": "str"
+      }
+    ],
+    "checkall": "false",
+    "repair": false,
+    "outputs": 3,
+    "x": 350,
+    "y": 100,
+    "wires": [
+      [
+        "lidar-processor"
+      ],
+      [
+        "encoder-processor"
+      ],
+      [
+        "generic-sensor-processor"
+      ]
+    ]
+  },
+  {
+    "id": "status-router",
+    "type": "switch",
+    "z": "telemetry-flows-tab",
+    "name": "Status Router",
+    "property": "topic",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "cont",
+        "v": "orchestrator/status/robot",
+        "vt": "str"
+      },
+      {
+        "t": "cont",
+        "v": "orchestrator/status/safety",
+        "vt": "str"
+      },
+      {
+        "t": "cont",
+        "v": "orchestrator/status/system",
+        "vt": "str"
+      },
+      {
+        "t": "cont",
+        "v": "orchestrator/status/",
+        "vt": "str"
+      }
+    ],
+    "checkall": "false",
+    "repair": false,
+    "outputs": 4,
+    "x": 350,
+    "y": 200,
+    "wires": [
+      [
+        "robot-status-processor"
+      ],
+      [
+        "safety-status-processor"
+      ],
+      [
+        "system-status-processor"
+      ],
+      [
+        "generic-status-processor"
+      ]
+    ]
+  },
+  {
+    "id": "lidar-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "LiDAR Data Processor",
+    "func": "// Process LiDAR scan data for dashboard display\nconst lidarData = msg.payload;\n\n// Validate LiDAR data structure\nif (!lidarData || !lidarData.ranges || !lidarData.angles) {\n    node.error('Invalid LiDAR data structure', msg);\n    return null;\n}\n\n// Calculate statistics\nconst ranges = lidarData.ranges;\nconst minRange = Math.min(...ranges);\nconst maxRange = Math.max(...ranges);\nconst avgRange = ranges.reduce((a, b) => a + b, 0) / ranges.length;\n\n// Find closest obstacle\nconst closestIndex = ranges.indexOf(minRange);\nconst closestAngle = lidarData.angles[closestIndex];\n\n// Create processed data for dashboard\nconst processedData = {\n    timestamp: lidarData.timestamp || new Date().toISOString(),\n    scanCount: ranges.length,\n    minRange: minRange.toFixed(2),\n    maxRange: maxRange.toFixed(2),\n    avgRange: avgRange.toFixed(2),\n    closestObstacle: {\n        distance: minRange.toFixed(2),\n        angle: closestAngle\n    },\n    rawData: {\n        ranges: ranges,\n        angles: lidarData.angles\n    }\n};\n\n// Store in context for dashboard access\nflow.set('lidarData', processedData);\n\n// Create multiple outputs for different dashboard widgets\nreturn [\n    { payload: processedData.minRange, topic: 'lidar/min_range' },\n    { payload: processedData.avgRange, topic: 'lidar/avg_range' },\n    { payload: processedData.closestObstacle, topic: 'lidar/closest_obstacle' },\n    { payload: processedData, topic: 'lidar/full_data' }\n];",
+    "outputs": 4,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 550,
+    "y": 60,
+    "wires": [
+      [
+        "ui-lidar-min-range"
+      ],
+      [
+        "ui-lidar-avg-range"
+      ],
+      [
+        "ui-lidar-closest-obstacle"
+      ],
+      [
+        "lidar-visualization-processor"
+      ]
+    ]
+  },
+  {
+    "id": "encoder-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "Encoder Data Processor",
+    "func": "// Process encoder data for odometry display\nconst encoderData = msg.payload;\n\n// Validate encoder data structure\nif (!encoderData) {\n    node.error('Invalid encoder data', msg);\n    return null;\n}\n\n// Extract encoder information\nconst leftCount = encoderData.left_count || 0;\nconst rightCount = encoderData.right_count || 0;\nconst distanceTraveled = encoderData.distance_traveled || 0;\nconst velocity = encoderData.velocity || { linear: 0, angular: 0 };\n\n// Calculate additional metrics\nconst totalTicks = leftCount + rightCount;\nconst tickDifference = Math.abs(leftCount - rightCount);\n\n// Create processed data\nconst processedData = {\n    timestamp: encoderData.timestamp || new Date().toISOString(),\n    leftCount: leftCount,\n    rightCount: rightCount,\n    totalTicks: totalTicks,\n    tickDifference: tickDifference,\n    distanceTraveled: distanceTraveled.toFixed(2),\n    velocity: {\n        linear: velocity.linear.toFixed(2),\n        angular: velocity.angular.toFixed(2)\n    }\n};\n\n// Store in context\nflow.set('encoderData', processedData);\n\n// Create outputs for different dashboard widgets\nreturn [\n    { payload: processedData.distanceTraveled, topic: 'encoder/distance' },\n    { payload: processedData.velocity.linear, topic: 'encoder/linear_velocity' },\n    { payload: processedData.velocity.angular, topic: 'encoder/angular_velocity' },\n    { payload: processedData, topic: 'encoder/full_data' }\n];",
+    "outputs": 4,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 550,
+    "y": 120,
+    "wires": [
+      [
+        "ui-distance-traveled"
+      ],
+      [
+        "ui-linear-velocity"
+      ],
+      [
+        "ui-angular-velocity"
+      ],
+      [
+        "encoder-debug"
+      ]
+    ]
+  },
+  {
+    "id": "robot-status-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "Robot Status Processor",
+    "func": "// Process robot status for dashboard display\nconst robotStatus = msg.payload;\n\n// Validate status data\nif (!robotStatus) {\n    node.error('Invalid robot status data', msg);\n    return null;\n}\n\n// Extract status information\nconst status = robotStatus.status || 'unknown';\nconst position = robotStatus.position || { x: 0, y: 0, heading: 0 };\nconst mission = robotStatus.mission || 'idle';\nconst reason = robotStatus.reason || '';\n\n// Create processed status\nconst processedStatus = {\n    timestamp: robotStatus.timestamp || new Date().toISOString(),\n    status: status,\n    position: {\n        x: parseFloat(position.x).toFixed(2),\n        y: parseFloat(position.y).toFixed(2),\n        heading: parseFloat(position.heading).toFixed(1)\n    },\n    mission: mission,\n    reason: reason,\n    statusColor: getStatusColor(status),\n    missionColor: getMissionColor(mission)\n};\n\n// Helper functions for status colors\nfunction getStatusColor(status) {\n    switch(status) {\n        case 'active': return 'green';\n        case 'idle': return 'blue';\n        case 'error': return 'red';\n        case 'emergency_stop': return 'red';\n        default: return 'gray';\n    }\n}\n\nfunction getMissionColor(mission) {\n    switch(mission) {\n        case 'complete': return 'green';\n        case 'in_progress': return 'orange';\n        case 'failed': return 'red';\n        case 'idle': return 'blue';\n        default: return 'gray';\n    }\n}\n\n// Store in context\nflow.set('robotStatus', processedStatus);\n\n// Create outputs for different dashboard widgets\nreturn [\n    { payload: processedStatus.status, topic: 'robot/status', ui_control: { color: processedStatus.statusColor } },\n    { payload: `${processedStatus.position.x}, ${processedStatus.position.y}`, topic: 'robot/position' },\n    { payload: processedStatus.position.heading, topic: 'robot/heading' },\n    { payload: processedStatus.mission, topic: 'robot/mission', ui_control: { color: processedStatus.missionColor } },\n    { payload: processedStatus, topic: 'robot/full_status' }\n];",
+    "outputs": 5,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 550,
+    "y": 180,
+    "wires": [
+      [
+        "ui-robot-status"
+      ],
+      [
+        "ui-robot-position"
+      ],
+      [
+        "ui-robot-heading"
+      ],
+      [
+        "ui-mission-status"
+      ],
+      [
+        "robot-status-debug"
+      ]
+    ]
+  },
+  {
+    "id": "safety-status-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "Safety Status Processor",
+    "func": "// Process safety status for dashboard display\nconst safetyStatus = msg.payload;\n\n// Validate safety data\nif (!safetyStatus) {\n    node.error('Invalid safety status data', msg);\n    return null;\n}\n\n// Extract safety information\nconst status = safetyStatus.status || 'unknown';\nconst obstacleDetected = safetyStatus.obstacle_detected || false;\nconst minDistance = safetyStatus.min_distance || null;\nconst safetyThreshold = safetyStatus.safety_threshold || 0.5;\nconst lastTrigger = safetyStatus.last_trigger || null;\n\n// Create processed safety status\nconst processedSafety = {\n    timestamp: safetyStatus.timestamp || new Date().toISOString(),\n    status: status,\n    obstacleDetected: obstacleDetected,\n    minDistance: minDistance ? parseFloat(minDistance).toFixed(2) : 'N/A',\n    safetyThreshold: parseFloat(safetyThreshold).toFixed(2),\n    lastTrigger: lastTrigger,\n    statusColor: getSafetyColor(status, obstacleDetected),\n    alertLevel: getAlertLevel(obstacleDetected, minDistance, safetyThreshold)\n};\n\n// Helper functions\nfunction getSafetyColor(status, obstacleDetected) {\n    if (obstacleDetected) return 'red';\n    if (status === 'active') return 'green';\n    if (status === 'warning') return 'orange';\n    return 'gray';\n}\n\nfunction getAlertLevel(obstacleDetected, minDistance, threshold) {\n    if (obstacleDetected) return 'DANGER';\n    if (minDistance && minDistance < threshold * 1.5) return 'WARNING';\n    return 'SAFE';\n}\n\n// Store in context\nflow.set('safetyStatus', processedSafety);\n\n// Create outputs for dashboard widgets\nreturn [\n    { payload: processedSafety.alertLevel, topic: 'safety/alert_level', ui_control: { color: processedSafety.statusColor } },\n    { payload: processedSafety.minDistance, topic: 'safety/min_distance' },\n    { payload: processedSafety.obstacleDetected ? 'OBSTACLE' : 'CLEAR', topic: 'safety/obstacle_status' },\n    { payload: processedSafety, topic: 'safety/full_status' }\n];",
+    "outputs": 4,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 550,
+    "y": 240,
+    "wires": [
+      [
+        "ui-safety-alert"
+      ],
+      [
+        "ui-safety-distance"
+      ],
+      [
+        "ui-obstacle-status"
+      ],
+      [
+        "safety-status-debug"
+      ]
+    ]
+  },
+  {
+    "id": "system-status-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "System Status Processor",
+    "func": "// Process system status for dashboard display\nconst systemStatus = msg.payload;\n\n// Validate system data\nif (!systemStatus) {\n    node.error('Invalid system status data', msg);\n    return null;\n}\n\n// Extract system information\nconst status = systemStatus.status || 'unknown';\nconst component = systemStatus.component || 'system';\nconst uptime = systemStatus.uptime || null;\nconst memoryUsage = systemStatus.memory_usage || null;\nconst cpuUsage = systemStatus.cpu_usage || null;\n\n// Create processed system status\nconst processedSystem = {\n    timestamp: systemStatus.timestamp || new Date().toISOString(),\n    status: status,\n    component: component,\n    uptime: uptime,\n    memoryUsage: memoryUsage ? parseFloat(memoryUsage).toFixed(1) : 'N/A',\n    cpuUsage: cpuUsage ? parseFloat(cpuUsage).toFixed(1) : 'N/A',\n    statusColor: getSystemColor(status)\n};\n\n// Helper function for system status colors\nfunction getSystemColor(status) {\n    switch(status) {\n        case 'active': return 'green';\n        case 'online': return 'green';\n        case 'offline': return 'red';\n        case 'error': return 'red';\n        case 'warning': return 'orange';\n        default: return 'gray';\n    }\n}\n\n// Store in context\nflow.set('systemStatus', processedSystem);\n\n// Create log entry for system logs\nconst logEntry = {\n    timestamp: processedSystem.timestamp,\n    level: status === 'error' ? 'ERROR' : status === 'warning' ? 'WARN' : 'INFO',\n    component: component,\n    message: `${component}: ${status}`,\n    data: systemStatus\n};\n\n// Add to system logs (keep last 50 entries)\nlet systemLogs = flow.get('systemLogs') || [];\nsystemLogs.unshift(logEntry);\nif (systemLogs.length > 50) {\n    systemLogs = systemLogs.slice(0, 50);\n}\nflow.set('systemLogs', systemLogs);\n\n// Create outputs for dashboard widgets\nreturn [\n    { payload: `${component}: ${status}`, topic: 'system/component_status', ui_control: { color: processedSystem.statusColor } },\n    { payload: processedSystem.memoryUsage, topic: 'system/memory_usage' },\n    { payload: processedSystem.cpuUsage, topic: 'system/cpu_usage' },\n    { payload: logEntry, topic: 'system/log_entry' },\n    { payload: processedSystem, topic: 'system/full_status' }\n];",
+    "outputs": 5,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 550,
+    "y": 300,
+    "wires": [
+      [
+        "ui-system-status"
+      ],
+      [
+        "ui-memory-usage"
+      ],
+      [
+        "ui-cpu-usage"
+      ],
+      [
+        "ui-system-logs"
+      ],
+      [
+        "system-status-debug"
+      ]
+    ]
+  },
+  {
+    "id": "generic-sensor-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "Generic Sensor Processor",
+    "func": "// Process generic sensor data\nconst sensorData = msg.payload;\nconst topic = msg.topic;\n\n// Extract sensor type from topic\nconst sensorType = topic.split('/').pop();\n\n// Create generic processed data\nconst processedData = {\n    timestamp: sensorData.timestamp || new Date().toISOString(),\n    sensorType: sensorType,\n    data: sensorData,\n    topic: topic\n};\n\n// Log unknown sensor types for debugging\nnode.log(`Processing generic sensor data from ${sensorType}: ${JSON.stringify(sensorData)}`);\n\n// Store in context with sensor type key\nflow.set(`sensorData_${sensorType}`, processedData);\n\nreturn { payload: processedData, topic: `sensor/${sensorType}` };",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 550,
+    "y": 360,
+    "wires": [
+      [
+        "generic-sensor-debug"
+      ]
+    ]
+  },
+  {
+    "id": "generic-status-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "Generic Status Processor",
+    "func": "// Process generic status data\nconst statusData = msg.payload;\nconst topic = msg.topic;\n\n// Extract status type from topic\nconst statusType = topic.split('/').pop();\n\n// Create generic processed status\nconst processedStatus = {\n    timestamp: statusData.timestamp || new Date().toISOString(),\n    statusType: statusType,\n    data: statusData,\n    topic: topic\n};\n\n// Log unknown status types for debugging\nnode.log(`Processing generic status data from ${statusType}: ${JSON.stringify(statusData)}`);\n\n// Store in context with status type key\nflow.set(`statusData_${statusType}`, processedStatus);\n\nreturn { payload: processedStatus, topic: `status/${statusType}` };",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 550,
+    "y": 420,
+    "wires": [
+      [
+        "generic-status-debug"
+      ]
+    ]
+  },
+  {
+    "id": "ui-lidar-min-range",
+    "type": "ui_gauge",
+    "z": "telemetry-flows-tab",
+    "name": "Min Range",
+    "group": "ui-group-sensor-data",
+    "order": 1,
+    "width": 3,
+    "height": 3,
+    "gtype": "gage",
+    "title": "LiDAR Min Range (m)",
+    "label": "meters",
+    "format": "{{value}}",
+    "min": 0,
+    "max": 10,
+    "colors": [
+      "#ca3838",
+      "#e6e600",
+      "#00b500"
+    ],
+    "seg1": 0.5,
+    "seg2": 2,
+    "className": "",
+    "x": 750,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "ui-lidar-avg-range",
+    "type": "ui_gauge",
+    "z": "telemetry-flows-tab",
+    "name": "Avg Range",
+    "group": "ui-group-sensor-data",
+    "order": 2,
+    "width": 3,
+    "height": 3,
+    "gtype": "gage",
+    "title": "LiDAR Avg Range (m)",
+    "label": "meters",
+    "format": "{{value}}",
+    "min": 0,
+    "max": 10,
+    "colors": [
+      "#ca3838",
+      "#e6e600",
+      "#00b500"
+    ],
+    "seg1": 2,
+    "seg2": 5,
+    "className": "",
+    "x": 750,
+    "y": 80,
+    "wires": []
+  },
+  {
+    "id": "ui-lidar-closest-obstacle",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-sensor-data",
+    "order": 3,
+    "width": 6,
+    "height": 1,
+    "name": "Closest Obstacle",
+    "label": "Closest Obstacle:",
+    "format": "{{msg.payload.distance}}m @ {{msg.payload.angle}}\u00b0",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "ui-distance-traveled",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-robot-status",
+    "order": 1,
+    "width": 3,
+    "height": 1,
+    "name": "Distance Traveled",
+    "label": "Distance:",
+    "format": "{{value}} m",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "ui-linear-velocity",
+    "type": "ui_gauge",
+    "z": "telemetry-flows-tab",
+    "name": "Linear Velocity",
+    "group": "ui-group-robot-status",
+    "order": 2,
+    "width": 3,
+    "height": 2,
+    "gtype": "gage",
+    "title": "Linear Velocity",
+    "label": "m/s",
+    "format": "{{value}}",
+    "min": 0,
+    "max": 2,
+    "colors": [
+      "#00b500",
+      "#e6e600",
+      "#ca3838"
+    ],
+    "seg1": 0.5,
+    "seg2": 1.5,
+    "className": "",
+    "x": 750,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "ui-angular-velocity",
+    "type": "ui_gauge",
+    "z": "telemetry-flows-tab",
+    "name": "Angular Velocity",
+    "group": "ui-group-robot-status",
+    "order": 3,
+    "width": 3,
+    "height": 2,
+    "gtype": "gage",
+    "title": "Angular Velocity",
+    "label": "rad/s",
+    "format": "{{value}}",
+    "min": -2,
+    "max": 2,
+    "colors": [
+      "#00b500",
+      "#e6e600",
+      "#ca3838"
+    ],
+    "seg1": -1,
+    "seg2": 1,
+    "className": "",
+    "x": 750,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "ui-robot-status",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-robot-status",
+    "order": 4,
+    "width": 3,
+    "height": 1,
+    "name": "Robot Status",
+    "label": "Status:",
+    "format": "{{value}}",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 280,
+    "wires": []
+  },
+  {
+    "id": "ui-robot-position",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-robot-status",
+    "order": 5,
+    "width": 3,
+    "height": 1,
+    "name": "Robot Position",
+    "label": "Position (X,Y):",
+    "format": "{{value}}",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "ui-robot-heading",
+    "type": "ui_gauge",
+    "z": "telemetry-flows-tab",
+    "name": "Robot Heading",
+    "group": "ui-group-robot-status",
+    "order": 6,
+    "width": 3,
+    "height": 2,
+    "gtype": "compass",
+    "title": "Heading",
+    "label": "degrees",
+    "format": "{{value}}",
+    "min": 0,
+    "max": 360,
+    "colors": [
+      "#00b500",
+      "#e6e600",
+      "#ca3838"
+    ],
+    "seg1": 120,
+    "seg2": 240,
+    "className": "",
+    "x": 750,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "ui-mission-status",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-robot-status",
+    "order": 7,
+    "width": 6,
+    "height": 1,
+    "name": "Mission Status",
+    "label": "Mission:",
+    "format": "{{value}}",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "ui-safety-alert",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-sensor-data",
+    "order": 4,
+    "width": 6,
+    "height": 1,
+    "name": "Safety Alert",
+    "label": "Safety Status:",
+    "format": "{{value}}",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 440,
+    "wires": []
+  },
+  {
+    "id": "ui-safety-distance",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-sensor-data",
+    "order": 5,
+    "width": 3,
+    "height": 1,
+    "name": "Safety Distance",
+    "label": "Min Distance:",
+    "format": "{{value}} m",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 480,
+    "wires": []
+  },
+  {
+    "id": "ui-obstacle-status",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-sensor-data",
+    "order": 6,
+    "width": 3,
+    "height": 1,
+    "name": "Obstacle Status",
+    "label": "Obstacles:",
+    "format": "{{value}}",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 520,
+    "wires": []
+  },
+  {
+    "id": "ui-system-status",
+    "type": "ui_text",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-system-logs",
+    "order": 1,
+    "width": 6,
+    "height": 1,
+    "name": "System Status",
+    "label": "System:",
+    "format": "{{value}}",
+    "layout": "row-spread",
+    "className": "",
+    "x": 750,
+    "y": 560,
+    "wires": []
+  },
+  {
+    "id": "ui-memory-usage",
+    "type": "ui_gauge",
+    "z": "telemetry-flows-tab",
+    "name": "Memory Usage",
+    "group": "ui-group-system-logs",
+    "order": 2,
+    "width": 3,
+    "height": 2,
+    "gtype": "gage",
+    "title": "Memory Usage",
+    "label": "%",
+    "format": "{{value}}",
+    "min": 0,
+    "max": 100,
+    "colors": [
+      "#00b500",
+      "#e6e600",
+      "#ca3838"
+    ],
+    "seg1": 60,
+    "seg2": 80,
+    "className": "",
+    "x": 750,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "ui-cpu-usage",
+    "type": "ui_gauge",
+    "z": "telemetry-flows-tab",
+    "name": "CPU Usage",
+    "group": "ui-group-system-logs",
+    "order": 3,
+    "width": 3,
+    "height": 2,
+    "gtype": "gage",
+    "title": "CPU Usage",
+    "label": "%",
+    "format": "{{value}}",
+    "min": 0,
+    "max": 100,
+    "colors": [
+      "#00b500",
+      "#e6e600",
+      "#ca3838"
+    ],
+    "seg1": 60,
+    "seg2": 80,
+    "className": "",
+    "x": 750,
+    "y": 640,
+    "wires": []
+  },
+  {
+    "id": "ui-system-logs",
+    "type": "ui_template",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-system-logs",
+    "name": "System Logs",
+    "order": 4,
+    "width": 12,
+    "height": 6,
+    "format": "<div style=\"height: 300px; overflow-y: auto; font-family: monospace; font-size: 12px; background: #1a1a1a; color: #00ff00; padding: 10px; border-radius: 5px;\">\n    <div ng-repeat=\"log in msg.payload track by $index\" \n         ng-class=\"{'text-danger': log.level === 'ERROR', 'text-warning': log.level === 'WARN', 'text-info': log.level === 'INFO'}\">\n        <span style=\"color: #888;\">{{log.timestamp | date:'HH:mm:ss'}}</span>\n        <span ng-class=\"{'color: #ff4444': log.level === 'ERROR', 'color: #ffaa00': log.level === 'WARN', 'color: #44ff44': log.level === 'INFO'}\">{{log.level}}</span>\n        <span style=\"color: #00aaff;\">{{log.component}}</span>\n        <span style=\"color: #ffffff;\">{{log.message}}</span>\n    </div>\n</div>",
+    "storeOutMessages": true,
+    "fwdInMessages": true,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 750,
+    "y": 680,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "lidar-visualization-processor",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "LiDAR Visualization Processor",
+    "func": "// Process LiDAR data for visualization canvas\nconst lidarData = msg.payload;\n\nif (!lidarData || !lidarData.rawData) {\n    return null;\n}\n\nconst ranges = lidarData.rawData.ranges;\nconst angles = lidarData.rawData.angles;\n\n// Convert polar coordinates to cartesian for visualization\nconst points = [];\nfor (let i = 0; i < ranges.length; i++) {\n    const range = ranges[i];\n    const angle = angles[i] * Math.PI / 180; // Convert to radians\n    \n    const x = range * Math.cos(angle);\n    const y = range * Math.sin(angle);\n    \n    points.push({ x: x, y: y, range: range, angle: angles[i] });\n}\n\n// Create visualization data\nconst vizData = {\n    timestamp: lidarData.timestamp,\n    points: points,\n    minRange: lidarData.minRange,\n    maxRange: lidarData.maxRange,\n    scanCount: points.length\n};\n\nreturn { payload: vizData, topic: 'lidar/visualization' };",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 750,
+    "y": 720,
+    "wires": [
+      [
+        "ui-lidar-canvas"
+      ]
+    ]
+  },
+  {
+    "id": "ui-lidar-canvas-enhanced",
+    "type": "ui_template",
+    "z": "telemetry-flows-tab",
+    "group": "ui-group-lidar-display",
+    "name": "Enhanced LiDAR Visualization",
+    "order": 1,
+    "width": 12,
+    "height": 8,
+    "format": "<div class=\"lidar-container\">\n    <canvas id=\"lidarCanvas\" width=\"600\" height=\"400\" style=\"border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; background: rgba(0,0,0,0.3);\"></canvas>\n    <div style=\"margin-top: 10px; display: flex; justify-content: space-between; color: #e0e6ed; font-size: 12px;\">\n        <span id=\"scanInfo\">Scan Points: 0</span>\n        <span id=\"rangeInfo\">Range: 0.0m - 0.0m</span>\n        <span id=\"obstacleInfo\">Closest: N/A</span>\n    </div>\n</div>\n\n<script>\n(function(scope) {\n    const canvas = document.getElementById('lidarCanvas');\n    const ctx = canvas.getContext('2d');\n    const centerX = canvas.width / 2;\n    const centerY = canvas.height / 2;\n    const maxRange = 5.0; // 5 meter max display range\n    const scale = Math.min(centerX, centerY) * 0.8 / maxRange;\n    \n    let lastScanData = null;\n    \n    function drawBackground() {\n        // Clear canvas with dark background\n        ctx.fillStyle = 'rgba(12, 12, 29, 0.9)';\n        ctx.fillRect(0, 0, canvas.width, canvas.height);\n        \n        // Draw range rings\n        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';\n        ctx.lineWidth = 1;\n        for (let i = 1; i <= 5; i++) {\n            ctx.beginPath();\n            ctx.arc(centerX, centerY, i * scale, 0, 2 * Math.PI);\n            ctx.stroke();\n            \n            // Range labels\n            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';\n            ctx.font = '10px Arial';\n            ctx.fillText(i + 'm', centerX + i * scale + 5, centerY - 5);\n        }\n        \n        // Draw crosshairs\n        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';\n        ctx.lineWidth = 1;\n        ctx.beginPath();\n        ctx.moveTo(0, centerY);\n        ctx.lineTo(canvas.width, centerY);\n        ctx.moveTo(centerX, 0);\n        ctx.lineTo(centerX, canvas.height);\n        ctx.stroke();\n        \n        // Draw robot at center\n        ctx.fillStyle = '#4CAF50';\n        ctx.beginPath();\n        ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);\n        ctx.fill();\n        \n        // Robot direction indicator\n        ctx.strokeStyle = '#4CAF50';\n        ctx.lineWidth = 3;\n        ctx.beginPath();\n        ctx.moveTo(centerX, centerY);\n        ctx.lineTo(centerX, centerY - 15);\n        ctx.stroke();\n    }\n    \n    function drawLidarScan(scanData) {\n        if (!scanData || !scanData.ranges || !scanData.angles) return;\n        \n        drawBackground();\n        \n        const ranges = scanData.ranges;\n        const angles = scanData.angles;\n        let minRange = Infinity;\n        let maxRange = 0;\n        let closestPoint = null;\n        let closestDistance = Infinity;\n        \n        // Draw scan points\n        ctx.fillStyle = '#F44336';\n        for (let i = 0; i < ranges.length && i < angles.length; i++) {\n            const range = ranges[i];\n            const angle = angles[i];\n            \n            if (range > 0 && range <= maxRange) {\n                // Convert polar to cartesian (angle in degrees, 0 = forward)\n                const angleRad = (angle - 90) * Math.PI / 180; // Adjust for canvas coordinates\n                const x = centerX + range * scale * Math.cos(angleRad);\n                const y = centerY + range * scale * Math.sin(angleRad);\n                \n                // Draw point\n                ctx.beginPath();\n                ctx.arc(x, y, 3, 0, 2 * Math.PI);\n                ctx.fill();\n                \n                // Track statistics\n                minRange = Math.min(minRange, range);\n                maxRange = Math.max(maxRange, range);\n                \n                if (range < closestDistance) {\n                    closestDistance = range;\n                    closestPoint = { range: range, angle: angle };\n                }\n            }\n        }\n        \n        // Highlight closest obstacle\n        if (closestPoint && closestDistance < 2.0) {\n            const angleRad = (closestPoint.angle - 90) * Math.PI / 180;\n            const x = centerX + closestPoint.range * scale * Math.cos(angleRad);\n            const y = centerY + closestPoint.range * scale * Math.sin(angleRad);\n            \n            ctx.strokeStyle = '#FF9800';\n            ctx.lineWidth = 2;\n            ctx.beginPath();\n            ctx.arc(x, y, 8, 0, 2 * Math.PI);\n            ctx.stroke();\n            \n            // Draw line to closest obstacle\n            ctx.beginPath();\n            ctx.moveTo(centerX, centerY);\n            ctx.lineTo(x, y);\n            ctx.stroke();\n        }\n        \n        // Update info displays\n        document.getElementById('scanInfo').textContent = `Scan Points: ${ranges.length}`;\n        document.getElementById('rangeInfo').textContent = `Range: ${minRange.toFixed(1)}m - ${maxRange.toFixed(1)}m`;\n        document.getElementById('obstacleInfo').textContent = closestPoint ? \n            `Closest: ${closestPoint.range.toFixed(2)}m @ ${closestPoint.angle.toFixed(0)}\u00b0` : 'Closest: N/A';\n    }\n    \n    // Listen for LiDAR data updates\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.payload) {\n            try {\n                const data = typeof msg.payload === 'string' ? JSON.parse(msg.payload) : msg.payload;\n                if (data.ranges && data.angles) {\n                    lastScanData = data;\n                    drawLidarScan(data);\n                }\n            } catch (e) {\n                console.error('Error parsing LiDAR data:', e);\n            }\n        }\n    });\n    \n    // Initial draw\n    drawBackground();\n    \n    // Redraw on canvas resize\n    window.addEventListener('resize', function() {\n        if (lastScanData) {\n            drawLidarScan(lastScanData);\n        } else {\n            drawBackground();\n        }\n    });\n    \n})(scope);\n</script>",
+    "storeOutMessages": false,
+    "fwdInMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 620,
+    "y": 1200,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "encoder-debug",
+    "type": "debug",
+    "z": "telemetry-flows-tab",
+    "name": "Encoder Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 760,
+    "wires": []
+  },
+  {
+    "id": "robot-status-debug",
+    "type": "debug",
+    "z": "telemetry-flows-tab",
+    "name": "Robot Status Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 800,
+    "wires": []
+  },
+  {
+    "id": "safety-status-debug",
+    "type": "debug",
+    "z": "telemetry-flows-tab",
+    "name": "Safety Status Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 840,
+    "wires": []
+  },
+  {
+    "id": "system-status-debug",
+    "type": "debug",
+    "z": "telemetry-flows-tab",
+    "name": "System Status Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 880,
+    "wires": []
+  },
+  {
+    "id": "generic-sensor-debug",
+    "type": "debug",
+    "z": "telemetry-flows-tab",
+    "name": "Generic Sensor Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 920,
+    "wires": []
+  },
+  {
+    "id": "generic-status-debug",
+    "type": "debug",
+    "z": "telemetry-flows-tab",
+    "name": "Generic Status Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 960,
+    "wires": []
+  },
+  {
+    "id": "system-log-manager",
+    "type": "function",
+    "z": "telemetry-flows-tab",
+    "name": "System Log Manager",
+    "func": "// Manage system logs display\nconst logEntry = msg.payload;\n\n// Get current logs from context\nlet systemLogs = flow.get('systemLogs') || [];\n\n// Format logs for display\nconst formattedLogs = systemLogs.map(log => ({\n    timestamp: log.timestamp,\n    level: log.level,\n    component: log.component,\n    message: log.message\n}));\n\n// Return formatted logs for UI display\nreturn { payload: formattedLogs, topic: 'system/formatted_logs' };",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 950,
+    "y": 680,
+    "wires": [
+      [
+        "ui-system-logs"
+      ]
+    ]
+  },
+  {
+    "id": "log-refresh-timer",
+    "type": "inject",
+    "z": "telemetry-flows-tab",
+    "name": "Log Refresh Timer",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "5",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "refresh",
+    "payloadType": "str",
+    "x": 750,
+    "y": 1000,
+    "wires": [
+      [
+        "system-log-manager"
+      ]
+    ]
+  },
+  {
+    "id": "ui-custom-css",
+    "type": "ui_template",
+    "z": "main-flow-tab",
+    "group": "",
+    "name": "Custom CSS - Glassmorphism",
+    "order": 0,
+    "width": 0,
+    "height": 0,
+    "format": "<style>\n/* Glassmorphism Dashboard Styling */\nbody {\n    background: linear-gradient(135deg, #0c0c1d 0%, #1a1a2e 50%, #16213e 100%);\n    background-attachment: fixed;\n}\n\n/* Glass effect for groups */\n.nr-dashboard-cardpanel {\n    background: rgba(255, 255, 255, 0.05) !important;\n    backdrop-filter: blur(10px) !important;\n    border: 1px solid rgba(255, 255, 255, 0.1) !important;\n    border-radius: 15px !important;\n    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;\n}\n\n/* Enhanced buttons with glassmorphism */\n.nr-dashboard-button {\n    background: rgba(255, 255, 255, 0.1) !important;\n    backdrop-filter: blur(10px) !important;\n    border: 1px solid rgba(255, 255, 255, 0.2) !important;\n    border-radius: 10px !important;\n    transition: all 0.3s ease !important;\n}\n\n.nr-dashboard-button:hover {\n    background: rgba(255, 255, 255, 0.2) !important;\n    transform: translateY(-2px) !important;\n    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;\n}\n\n/* Emergency stop special styling */\n.emergency-stop {\n    background: rgba(204, 0, 0, 0.3) !important;\n    border: 2px solid #cc0000 !important;\n    animation: pulse 2s infinite !important;\n}\n\n@keyframes pulse {\n    0% { box-shadow: 0 0 0 0 rgba(204, 0, 0, 0.7); }\n    70% { box-shadow: 0 0 0 10px rgba(204, 0, 0, 0); }\n    100% { box-shadow: 0 0 0 0 rgba(204, 0, 0, 0); }\n}\n\n/* Gauge enhancements */\n.nr-dashboard-gauge {\n    background: rgba(255, 255, 255, 0.05) !important;\n    border-radius: 15px !important;\n    backdrop-filter: blur(10px) !important;\n}\n\n/* Text displays with glass effect */\n.nr-dashboard-text {\n    background: rgba(255, 255, 255, 0.05) !important;\n    border-radius: 8px !important;\n    backdrop-filter: blur(5px) !important;\n    padding: 10px !important;\n    border: 1px solid rgba(255, 255, 255, 0.1) !important;\n}\n\n/* Slider enhancements */\n.nr-dashboard-slider {\n    background: rgba(255, 255, 255, 0.05) !important;\n    border-radius: 10px !important;\n    backdrop-filter: blur(10px) !important;\n}\n\n/* Tab styling */\n.md-tab {\n    background: rgba(255, 255, 255, 0.1) !important;\n    backdrop-filter: blur(10px) !important;\n}\n\n/* LiDAR canvas container */\n.lidar-container {\n    background: rgba(0, 0, 0, 0.3) !important;\n    border-radius: 15px !important;\n    backdrop-filter: blur(10px) !important;\n    border: 1px solid rgba(255, 255, 255, 0.1) !important;\n    padding: 15px !important;\n}\n\n/* Status indicators */\n.status-active { color: #4CAF50 !important; }\n.status-idle { color: #2196F3 !important; }\n.status-warning { color: #FF9800 !important; }\n.status-error { color: #F44336 !important; }\n.status-emergency { color: #CC0000 !important; animation: blink 1s infinite; }\n\n@keyframes blink {\n    0%, 50% { opacity: 1; }\n    51%, 100% { opacity: 0.3; }\n}\n\n/* Mission status styling */\n.mission-in-progress { color: #4CAF50; font-weight: bold; }\n.mission-paused { color: #FF9800; font-weight: bold; }\n.mission-completed { color: #2196F3; font-weight: bold; }\n.mission-failed { color: #F44336; font-weight: bold; }\n\n/* System logs styling */\n.system-logs {\n    background: rgba(0, 0, 0, 0.5) !important;\n    border-radius: 10px !important;\n    font-family: 'Courier New', monospace !important;\n    max-height: 300px !important;\n    overflow-y: auto !important;\n}\n\n.log-error { color: #F44336; }\n.log-warning { color: #FF9800; }\n.log-info { color: #4CAF50; }\n.log-debug { color: #9E9E9E; }\n</style>",
+    "storeOutMessages": false,
+    "fwdInMessages": false,
+    "resendOnRefresh": false,
+    "templateScope": "global",
+    "className": "",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "ui-group-mission-params",
+    "type": "ui_group",
+    "name": "Mission Parameters",
+    "tab": "ui-tab-control",
+    "order": 4,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-mission-name-input",
+    "type": "ui_text_input",
+    "z": "command-flows-tab",
+    "name": "Mission Name",
+    "label": "Mission Name",
+    "tooltip": "Enter mission name",
+    "group": "ui-group-mission-params",
+    "order": 1,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "mode": "text",
+    "delay": 300,
+    "topic": "mission_name",
+    "sendOnBlur": true,
+    "className": "",
+    "topicType": "str",
+    "x": 150,
+    "y": 800,
+    "wires": [
+      [
+        "mission-param-storage"
+      ]
+    ]
+  },
+  {
+    "id": "ui-waypoint-count-slider",
+    "type": "ui_slider",
+    "z": "command-flows-tab",
+    "name": "Waypoint Count",
+    "label": "Waypoints",
+    "tooltip": "Number of waypoints in mission",
+    "group": "ui-group-mission-params",
+    "order": 2,
+    "width": 3,
+    "height": 1,
+    "passthru": true,
+    "outs": "end",
+    "topic": "waypoint_count",
+    "topicType": "str",
+    "min": 1,
+    "max": 10,
+    "step": 1,
+    "className": "",
+    "x": 150,
+    "y": 840,
+    "wires": [
+      [
+        "mission-param-storage"
+      ]
+    ]
+  },
+  {
+    "id": "ui-mission-timeout-slider",
+    "type": "ui_slider",
+    "z": "command-flows-tab",
+    "name": "Mission Timeout",
+    "label": "Timeout (min)",
+    "tooltip": "Mission timeout in minutes",
+    "group": "ui-group-mission-params",
+    "order": 3,
+    "width": 3,
+    "height": 1,
+    "passthru": true,
+    "outs": "end",
+    "topic": "mission_timeout",
+    "topicType": "str",
+    "min": 1,
+    "max": 60,
+    "step": 1,
+    "className": "",
+    "x": 150,
+    "y": 880,
+    "wires": [
+      [
+        "mission-param-storage"
+      ]
+    ]
+  },
+  {
+    "id": "mission-param-storage",
+    "type": "function",
+    "z": "command-flows-tab",
+    "name": "Mission Parameter Storage",
+    "func": "// Store mission parameters in flow context\nconst param = msg.topic;\nconst value = msg.payload;\n\n// Store the parameter\nflow.set(param, value);\n\n// Log the parameter update\nnode.log(`Mission parameter updated: ${param} = ${value}`);\n\n// Get all current parameters\nconst params = {\n    mission_name: flow.get('mission_name') || 'Default Mission',\n    waypoint_count: flow.get('waypoint_count') || 3,\n    mission_timeout: flow.get('mission_timeout') || 10,\n    distance: flow.get('distance') || 10,\n    angle: flow.get('angle') || 90,\n    speed: flow.get('speed') || 0.5\n};\n\n// Send updated parameters to status display\nmsg.payload = params;\nmsg.topic = 'mission_parameters';\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 840,
+    "wires": [
+      [
+        "mission-params-display"
+      ]
+    ]
+  },
+  {
+    "id": "mission-params-display",
+    "type": "ui_template",
+    "z": "command-flows-tab",
+    "group": "ui-group-mission-params",
+    "name": "Mission Parameters Display",
+    "order": 4,
+    "width": 12,
+    "height": 3,
+    "format": "<div style=\"background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; backdrop-filter: blur(10px);\">\n    <h4 style=\"color: #e0e6ed; margin-top: 0;\">Current Mission Parameters</h4>\n    <div style=\"display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; color: #ffffff;\">\n        <div>\n            <strong>Mission:</strong><br>\n            <span id=\"missionName\">Default Mission</span>\n        </div>\n        <div>\n            <strong>Waypoints:</strong><br>\n            <span id=\"waypointCount\">3</span>\n        </div>\n        <div>\n            <strong>Timeout:</strong><br>\n            <span id=\"missionTimeout\">10</span> min\n        </div>\n        <div>\n            <strong>Distance:</strong><br>\n            <span id=\"moveDistance\">10</span> cm\n        </div>\n        <div>\n            <strong>Angle:</strong><br>\n            <span id=\"rotateAngle\">90</span>\u00b0\n        </div>\n        <div>\n            <strong>Speed:</strong><br>\n            <span id=\"moveSpeed\">0.5</span>\n        </div>\n    </div>\n</div>\n\n<script>\n(function(scope) {\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.payload && typeof msg.payload === 'object') {\n            const params = msg.payload;\n            \n            if (params.mission_name !== undefined) {\n                document.getElementById('missionName').textContent = params.mission_name;\n            }\n            if (params.waypoint_count !== undefined) {\n                document.getElementById('waypointCount').textContent = params.waypoint_count;\n            }\n            if (params.mission_timeout !== undefined) {\n                document.getElementById('missionTimeout').textContent = params.mission_timeout;\n            }\n            if (params.distance !== undefined) {\n                document.getElementById('moveDistance').textContent = params.distance;\n            }\n            if (params.angle !== undefined) {\n                document.getElementById('rotateAngle').textContent = params.angle;\n            }\n            if (params.speed !== undefined) {\n                document.getElementById('moveSpeed').textContent = params.speed.toFixed(1);\n            }\n        }\n    });\n})(scope);\n</script>",
+    "storeOutMessages": false,
+    "fwdInMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 620,
+    "y": 840,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "mission-sequencer-tab",
+    "type": "tab",
+    "label": "Mission Sequencer",
+    "disabled": false,
+    "info": "Mission sequencer flow that executes sequences of commands from JSON array input and manages mission state",
+    "env": []
+  },
+  {
+    "id": "ui-group-mission-sequencer",
+    "type": "ui_group",
+    "name": "Mission Sequencer",
+    "tab": "ui-tab-control",
+    "order": 5,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "ui-group-mission-status",
+    "type": "ui_group",
+    "name": "Mission Status",
+    "tab": "ui-tab-control",
+    "order": 6,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "mission-sequence-input",
+    "type": "ui_text_input",
+    "z": "mission-sequencer-tab",
+    "name": "Mission JSON Input",
+    "label": "Mission Sequence (JSON)",
+    "tooltip": "Enter mission sequence as JSON array",
+    "group": "ui-group-mission-sequencer",
+    "order": 1,
+    "width": 8,
+    "height": 1,
+    "passthru": true,
+    "mode": "text",
+    "delay": 300,
+    "topic": "mission_json",
+    "sendOnBlur": true,
+    "className": "",
+    "topicType": "str",
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "mission-json-validator"
+      ]
+    ]
+  },
+  {
+    "id": "mission-upload-btn",
+    "type": "ui_button",
+    "z": "mission-sequencer-tab",
+    "name": "Upload Mission",
+    "group": "ui-group-mission-sequencer",
+    "order": 2,
+    "width": 4,
+    "height": 1,
+    "passthru": false,
+    "label": "Upload Mission",
+    "tooltip": "Upload and validate mission sequence",
+    "color": "white",
+    "bgcolor": "green",
+    "className": "",
+    "icon": "upload",
+    "payload": "upload",
+    "payloadType": "str",
+    "topic": "mission_upload",
+    "topicType": "str",
+    "x": 150,
+    "y": 140,
+    "wires": [
+      [
+        "mission-json-validator"
+      ]
+    ]
+  },
+  {
+    "id": "mission-json-validator",
+    "type": "function",
+    "z": "mission-sequencer-tab",
+    "name": "Mission JSON Validator",
+    "func": "// Validate and process mission JSON input\nif (msg.topic === 'mission_upload') {\n    // Get the stored JSON from context\n    const jsonText = flow.get('mission_json_text') || '[]';\n    \n    try {\n        const sequence = JSON.parse(jsonText);\n        \n        if (!Array.isArray(sequence)) {\n            throw new Error('Mission sequence must be an array');\n        }\n        \n        const validActions = ['move_forward', 'move_backward', 'rotate_left', 'rotate_right', 'stop', 'wait'];\n        \n        // Validate each step\n        for (let i = 0; i < sequence.length; i++) {\n            const step = sequence[i];\n            \n            if (!step.action || !validActions.includes(step.action)) {\n                throw new Error(`Step ${i + 1}: Invalid or missing action`);\n            }\n            \n            if (step.action !== 'stop' && step.action !== 'wait' && !step.parameters) {\n                throw new Error(`Step ${i + 1}: Missing parameters for action ${step.action}`);\n            }\n            \n            if (!step.timeout || typeof step.timeout !== 'number' || step.timeout <= 0) {\n                throw new Error(`Step ${i + 1}: Invalid or missing timeout`);\n            }\n        }\n        \n        // Mission is valid - create mission data\n        const missionData = {\n            sequence: sequence,\n            timestamp: new Date().toISOString(),\n            mission_id: 'mission_' + Date.now()\n        };\n        \n        // Store the mission sequence in flow context\n        flow.set('current_mission', missionData);\n        flow.set('mission_state', 'loaded');\n        flow.set('current_step', 0);\n        flow.set('step_start_time', null);\n        \n        // Send status update\n        const statusMsg = {\n            topic: 'orchestrator/status/mission',\n            payload: {\n                mission_id: missionData.mission_id,\n                status: 'loaded',\n                total_steps: missionData.sequence.length,\n                current_step: 0,\n                timestamp: new Date().toISOString()\n            }\n        };\n        \n        node.log(`Mission uploaded: ${missionData.mission_id} with ${missionData.sequence.length} steps`);\n        return statusMsg;\n        \n    } catch (error) {\n        node.error(`Mission validation failed: ${error.message}`);\n        \n        const errorMsg = {\n            topic: 'orchestrator/status/mission',\n            payload: {\n                status: 'error',\n                error: error.message,\n                timestamp: new Date().toISOString()\n            }\n        };\n        \n        return errorMsg;\n    }\n} else if (msg.topic === 'mission_json') {\n    // Store the JSON text for later validation\n    flow.set('mission_json_text', msg.payload);\n    return null;\n}\n\nreturn null;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 120,
+    "wires": [
+      [
+        "mission-status-publisher"
+      ]
+    ]
+  },
+  {
+    "id": "mission-cmd-listener",
+    "type": "mqtt in",
+    "z": "mission-sequencer-tab",
+    "name": "Mission Command Listener",
+    "topic": "orchestrator/cmd/mission",
+    "qos": "1",
+    "datatype": "json",
+    "broker": "mqtt-broker-config",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 200,
+    "wires": [
+      [
+        "mission-state-manager"
+      ]
+    ]
+  },
+  {
+    "id": "mission-state-manager",
+    "type": "function",
+    "z": "mission-sequencer-tab",
+    "name": "Mission State Manager",
+    "func": "// Manage mission execution state\nconst command = msg.payload;\nconst action = command.action;\n\n// Get current mission state\nlet missionState = flow.get('mission_state') || 'idle';\nlet currentMission = flow.get('current_mission');\nlet currentStep = flow.get('current_step') || 0;\n\nnode.log(`Mission command received: ${action}, current state: ${missionState}`);\n\nswitch (action) {\n    case 'start_mission':\n        if (!currentMission) {\n            node.error('No mission loaded');\n            return null;\n        }\n        \n        if (missionState === 'loaded' || missionState === 'paused' || missionState === 'completed' || missionState === 'failed') {\n            flow.set('mission_state', 'in_progress');\n            flow.set('current_step', 0);\n            flow.set('step_start_time', Date.now());\n            \n            // Start executing the first step\n            const firstStep = currentMission.sequence[0];\n            const executeMsg = {\n                topic: 'execute_step',\n                payload: {\n                    step: firstStep,\n                    step_number: 0,\n                    mission_id: currentMission.mission_id\n                }\n            };\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'in_progress',\n                    current_step: 0,\n                    total_steps: currentMission.sequence.length,\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, executeMsg];\n        }\n        break;\n        \n    case 'pause_mission':\n        if (missionState === 'in_progress') {\n            flow.set('mission_state', 'paused');\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'paused',\n                    current_step: currentStep,\n                    total_steps: currentMission.sequence.length,\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, null];\n        }\n        break;\n        \n    case 'stop_mission':\n        if (missionState === 'in_progress' || missionState === 'paused') {\n            flow.set('mission_state', 'stopped');\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'stopped',\n                    current_step: currentStep,\n                    total_steps: currentMission.sequence.length,\n                    reason: 'user_stop',\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, null];\n        }\n        break;\n        \n    case 'reset_mission':\n        flow.set('mission_state', 'loaded');\n        flow.set('current_step', 0);\n        flow.set('step_start_time', null);\n        \n        const statusMsg = {\n            topic: 'orchestrator/status/mission',\n            payload: {\n                mission_id: currentMission ? currentMission.mission_id : 'none',\n                status: 'loaded',\n                current_step: 0,\n                total_steps: currentMission ? currentMission.sequence.length : 0,\n                timestamp: new Date().toISOString()\n            }\n        };\n        \n        return [statusMsg, null];\n}\n\nreturn null;",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 200,
+    "wires": [
+      [
+        "mission-status-publisher"
+      ],
+      [
+        "step-executor"
+      ]
+    ]
+  },
+  {
+    "id": "step-executor",
+    "type": "function",
+    "z": "mission-sequencer-tab",
+    "name": "Step Executor",
+    "func": "// Execute individual mission steps\nif (msg.topic === 'execute_step') {\n    const stepData = msg.payload;\n    const step = stepData.step;\n    const stepNumber = stepData.step_number;\n    \n    node.log(`Executing step ${stepNumber + 1}: ${step.action}`);\n    \n    // Create command message based on step action\n    let commandMsg = null;\n    \n    switch (step.action) {\n        case 'move_forward':\n        case 'move_backward':\n        case 'rotate_left':\n        case 'rotate_right':\n        case 'stop':\n            commandMsg = {\n                topic: 'orchestrator/cmd/motors',\n                payload: {\n                    action: step.action,\n                    parameters: step.parameters || {},\n                    timestamp: new Date().toISOString(),\n                    command_id: msg._msgid,\n                    mission_step: stepNumber,\n                    mission_id: stepData.mission_id\n                }\n            };\n            break;\n            \n        case 'wait':\n            // For wait commands, handle with a delay\n            const waitTime = step.parameters ? step.parameters.duration || 1000 : 1000;\n            \n            setTimeout(() => {\n                // After wait, proceed to next step\n                const nextStepMsg = {\n                    topic: 'step_completed',\n                    payload: {\n                        step_number: stepNumber,\n                        mission_id: stepData.mission_id,\n                        success: true\n                    }\n                };\n                node.send(nextStepMsg);\n            }, waitTime);\n            \n            return null;\n    }\n    \n    if (commandMsg) {\n        // Set up timeout for this step\n        const timeout = step.timeout * 1000; // Convert to milliseconds\n        \n        setTimeout(() => {\n            // Check if step is still in progress\n            const currentStep = flow.get('current_step');\n            const missionState = flow.get('mission_state');\n            \n            if (currentStep === stepNumber && missionState === 'in_progress') {\n                // Step timed out\n                const timeoutMsg = {\n                    topic: 'step_timeout',\n                    payload: {\n                        step_number: stepNumber,\n                        mission_id: stepData.mission_id,\n                        timeout: step.timeout\n                    }\n                };\n                node.send(timeoutMsg);\n            }\n        }, timeout);\n        \n        return commandMsg;\n    }\n}\n\n// Handle step completion\nif (msg.topic === 'step_completed') {\n    const completionData = msg.payload;\n    const stepNumber = completionData.step_number;\n    const success = completionData.success;\n    \n    const currentMission = flow.get('current_mission');\n    const missionState = flow.get('mission_state');\n    \n    if (missionState !== 'in_progress') {\n        return null; // Mission was stopped/paused\n    }\n    \n    if (success) {\n        const nextStep = stepNumber + 1;\n        \n        if (nextStep < currentMission.sequence.length) {\n            // Execute next step\n            flow.set('current_step', nextStep);\n            flow.set('step_start_time', Date.now());\n            \n            const nextStepData = currentMission.sequence[nextStep];\n            const executeMsg = {\n                topic: 'execute_step',\n                payload: {\n                    step: nextStepData,\n                    step_number: nextStep,\n                    mission_id: currentMission.mission_id\n                }\n            };\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'in_progress',\n                    current_step: nextStep,\n                    total_steps: currentMission.sequence.length,\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, executeMsg];\n        } else {\n            // Mission completed\n            flow.set('mission_state', 'completed');\n            \n            const statusMsg = {\n                topic: 'orchestrator/status/mission',\n                payload: {\n                    mission_id: currentMission.mission_id,\n                    status: 'completed',\n                    current_step: stepNumber,\n                    total_steps: currentMission.sequence.length,\n                    reason: 'mission_completed',\n                    timestamp: new Date().toISOString()\n                }\n            };\n            \n            return [statusMsg, null];\n        }\n    }\n}\n\nreturn null;",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 650,
+    "y": 200,
+    "wires": [
+      [
+        "mission-status-publisher"
+      ],
+      [
+        "motor-mqtt-publisher",
+        "step-executor"
+      ]
+    ]
+  },
+  {
+    "id": "mission-status-publisher",
+    "type": "mqtt out",
+    "z": "mission-sequencer-tab",
+    "name": "Mission Status Publisher",
+    "topic": "orchestrator/status/mission",
+    "qos": "1",
+    "retain": "true",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "mqtt-broker-config",
+    "x": 680,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "mission-status-display",
+    "type": "ui_text",
+    "z": "mission-sequencer-tab",
+    "group": "ui-group-mission-status",
+    "order": 1,
+    "width": 12,
+    "height": 1,
+    "name": "Mission Status",
+    "label": "Mission Status:",
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "className": "",
+    "x": 400,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "mission-status-listener",
+    "type": "mqtt in",
+    "z": "mission-sequencer-tab",
+    "name": "Mission Status Listener",
+    "topic": "orchestrator/status/mission",
+    "qos": "1",
+    "datatype": "json",
+    "broker": "mqtt-broker-config",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 400,
+    "wires": [
+      [
+        "mission-status-formatter"
+      ]
+    ]
+  },
+  {
+    "id": "mission-status-formatter",
+    "type": "function",
+    "z": "mission-sequencer-tab",
+    "name": "Mission Status Formatter",
+    "func": "// Format mission status for display\nconst status = msg.payload;\n\nif (status.error) {\n    msg.payload = `ERROR: ${status.error}`;\n} else {\n    const missionId = status.mission_id || 'None';\n    const state = status.status || 'Unknown';\n    const progress = `${(status.current_step || 0) + 1}/${status.total_steps || 0}`;\n    \n    msg.payload = `Mission: ${missionId} | Status: ${state} | Progress: ${progress}`;\n    \n    if (status.reason) {\n        msg.payload += ` | Reason: ${status.reason}`;\n    }\n}\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 440,
+    "wires": [
+      [
+        "mission-status-display"
+      ]
+    ]
+  }
+]

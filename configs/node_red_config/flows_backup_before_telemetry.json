@@ -1,0 +1,1111 @@
+[
+    {
+        "id": "mqtt-broker-config",
+        "type": "mqtt-broker",
+        "name": "Orchestrator MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node-red-orchestrator",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "orchestrator/status/nodered",
+        "birthQos": "1",
+        "birthRetain": "false",
+        "birthPayload": "{\"status\":\"online\",\"timestamp\":\"{{timestamp}}\"}",
+        "birthMsg": {},
+        "closeTopic": "orchestrator/status/nodered",
+        "closeQos": "1",
+        "closeRetain": "false",
+        "closePayload": "{\"status\":\"offline\",\"timestamp\":\"{{timestamp}}\"}",
+        "closeMsg": {},
+        "willTopic": "orchestrator/status/nodered",
+        "willQos": "1",
+        "willRetain": "false",
+        "willPayload": "{\"status\":\"disconnected\",\"timestamp\":\"{{timestamp}}\"}",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "dashboard-ui-config",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbae4",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "colours"
+            }
+        },
+        "site": {
+            "name": "Orchestrator Platform",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "ui-group-motor-control",
+        "type": "ui_group",
+        "name": "Motor Control",
+        "tab": "ui-tab-control",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ui-group-mission-control",
+        "type": "ui_group",
+        "name": "Mission Control",
+        "tab": "ui-tab-control",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ui-group-emergency",
+        "type": "ui_group",
+        "name": "Emergency Controls",
+        "tab": "ui-tab-control",
+        "order": 3,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ui-tab-control",
+        "type": "ui_tab",
+        "name": "Robot Control",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "main-flow-tab",
+        "type": "tab",
+        "label": "Orchestrator Main Flow",
+        "disabled": false,
+        "info": "Main flow for orchestrator platform MQTT communication and control logic",
+        "env": []
+    },
+    {
+        "id": "command-flows-tab",
+        "type": "tab",
+        "label": "Command Flows",
+        "disabled": false,
+        "info": "UI command translation flows that convert dashboard actions to MQTT commands",
+        "env": []
+    },
+    {
+        "id": "command-test-tab",
+        "type": "tab",
+        "label": "Command Testing",
+        "disabled": false,
+        "info": "Test flows for validating command generation and MQTT publishing",
+        "env": []
+    },
+    {
+        "id": "mqtt-status-node",
+        "type": "mqtt out",
+        "z": "main-flow-tab",
+        "name": "MQTT Status Publisher",
+        "topic": "orchestrator/status/system",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker-config",
+        "x": 400,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "system-status-inject",
+        "type": "inject",
+        "z": "main-flow-tab",
+        "name": "System Heartbeat",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "30",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "orchestrator/status/system",
+        "payload": "{\"status\":\"active\",\"timestamp\":\"{{timestamp}}\",\"component\":\"node-red\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "mqtt-status-node"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-cmd-listener",
+        "type": "mqtt in",
+        "z": "main-flow-tab",
+        "name": "Command Listener",
+        "topic": "orchestrator/cmd/+",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker-config",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "command-processor"
+            ]
+        ]
+    },
+    {
+        "id": "command-processor",
+        "type": "function",
+        "z": "main-flow-tab",
+        "name": "Command Processor",
+        "func": "// Process incoming MQTT commands\n// This is a placeholder for command processing logic\n\nconst command = msg.payload;\nconst topic = msg.topic;\n\n// Log the received command\nnode.log(`Received command on ${topic}: ${JSON.stringify(command)}`);\n\n// Extract component from topic (orchestrator/cmd/motors -> motors)\nconst component = topic.split('/').pop();\n\n// Add metadata to the message\nmsg.component = component;\nmsg.timestamp = new Date().toISOString();\n\n// Forward the processed command\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "command-debug"
+            ]
+        ]
+    },
+    {
+        "id": "command-debug",
+        "type": "debug",
+        "z": "main-flow-tab",
+        "name": "Command Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "mqtt-data-listener",
+        "type": "mqtt in",
+        "z": "main-flow-tab",
+        "name": "Telemetry Listener",
+        "topic": "orchestrator/data/+",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker-config",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "telemetry-processor"
+            ]
+        ]
+    },
+    {
+        "id": "telemetry-processor",
+        "type": "function",
+        "z": "main-flow-tab",
+        "name": "Telemetry Processor",
+        "func": "// Process incoming telemetry data\n// This is a placeholder for telemetry processing logic\n\nconst data = msg.payload;\nconst topic = msg.topic;\n\n// Log the received telemetry\nnode.log(`Received telemetry on ${topic}: ${JSON.stringify(data)}`);\n\n// Extract sensor type from topic (orchestrator/data/lidar -> lidar)\nconst sensorType = topic.split('/').pop();\n\n// Add metadata to the message\nmsg.sensorType = sensorType;\nmsg.processedAt = new Date().toISOString();\n\n// Forward the processed telemetry\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 300,
+        "wires": [
+            [
+                "telemetry-debug"
+            ]
+        ]
+    },
+    {
+        "id": "telemetry-debug",
+        "type": "debug",
+        "z": "main-flow-tab",
+        "name": "Telemetry Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ui-move-forward-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Move Forward",
+        "group": "ui-group-motor-control",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Forward",
+        "tooltip": "Move robot forward",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "arrow_upward",
+        "payload": "{\"action\":\"move_forward\"}",
+        "payloadType": "json",
+        "topic": "motor_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "motor-distance-input"
+            ]
+        ]
+    },
+    {
+        "id": "ui-move-backward-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Move Backward",
+        "group": "ui-group-motor-control",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Backward",
+        "tooltip": "Move robot backward",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "arrow_downward",
+        "payload": "{\"action\":\"move_backward\"}",
+        "payloadType": "json",
+        "topic": "motor_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "motor-distance-input"
+            ]
+        ]
+    },
+    {
+        "id": "ui-rotate-left-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Rotate Left",
+        "group": "ui-group-motor-control",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Left",
+        "tooltip": "Rotate robot left",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "rotate_left",
+        "payload": "{\"action\":\"rotate_left\"}",
+        "payloadType": "json",
+        "topic": "motor_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "motor-angle-input"
+            ]
+        ]
+    },
+    {
+        "id": "ui-rotate-right-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Rotate Right",
+        "group": "ui-group-motor-control",
+        "order": 4,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Right",
+        "tooltip": "Rotate robot right",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "rotate_right",
+        "payload": "{\"action\":\"rotate_right\"}",
+        "payloadType": "json",
+        "topic": "motor_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "motor-angle-input"
+            ]
+        ]
+    },
+    {
+        "id": "ui-motor-stop-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Motor Stop",
+        "group": "ui-group-motor-control",
+        "order": 5,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "STOP MOTORS",
+        "tooltip": "Stop all motor movement",
+        "color": "white",
+        "bgcolor": "red",
+        "className": "",
+        "icon": "stop",
+        "payload": "{\"action\":\"stop\"}",
+        "payloadType": "json",
+        "topic": "motor_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "motor-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "ui-distance-slider",
+        "type": "ui_slider",
+        "z": "command-flows-tab",
+        "name": "Distance (cm)",
+        "label": "Distance (cm)",
+        "tooltip": "Set movement distance in centimeters",
+        "group": "ui-group-motor-control",
+        "order": 6,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "outs": "end",
+        "topic": "distance",
+        "topicType": "str",
+        "min": 1,
+        "max": 200,
+        "step": 1,
+        "className": "",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "parameter-storage-distance"
+            ]
+        ]
+    },
+    {
+        "id": "ui-angle-slider",
+        "type": "ui_slider",
+        "z": "command-flows-tab",
+        "name": "Angle (degrees)",
+        "label": "Angle (degrees)",
+        "tooltip": "Set rotation angle in degrees",
+        "group": "ui-group-motor-control",
+        "order": 7,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "outs": "end",
+        "topic": "angle",
+        "topicType": "str",
+        "min": 1,
+        "max": 360,
+        "step": 1,
+        "className": "",
+        "x": 150,
+        "y": 360,
+        "wires": [
+            [
+                "parameter-storage-angle"
+            ]
+        ]
+    },
+    {
+        "id": "ui-speed-slider",
+        "type": "ui_slider",
+        "z": "command-flows-tab",
+        "name": "Speed",
+        "label": "Speed (0.1-1.0)",
+        "tooltip": "Set movement speed as fraction of maximum",
+        "group": "ui-group-motor-control",
+        "order": 8,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "outs": "end",
+        "topic": "speed",
+        "topicType": "str",
+        "min": "0.1",
+        "max": "1.0",
+        "step": "0.1",
+        "className": "",
+        "x": 150,
+        "y": 400,
+        "wires": [
+            [
+                "parameter-storage-speed"
+            ]
+        ]
+    },
+    {
+        "id": "motor-distance-input",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Add Distance Parameter",
+        "func": "// Get the current distance setting from context or use default\nconst distance = flow.get('distance') || 10;\nconst speed = flow.get('speed') || 0.5;\n\n// Add parameters to the command\nmsg.payload.parameters = {\n    distance: distance,\n    speed: speed\n};\n\n// Add command metadata\nmsg.payload.timestamp = new Date().toISOString();\nmsg.payload.command_id = msg._msgid;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "motor-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "motor-angle-input",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Add Angle Parameter",
+        "func": "// Get the current angle setting from context or use default\nconst angle = flow.get('angle') || 90;\nconst speed = flow.get('speed') || 0.5;\n\n// Add parameters to the command\nmsg.payload.parameters = {\n    angle: angle,\n    speed: speed\n};\n\n// Add command metadata\nmsg.payload.timestamp = new Date().toISOString();\nmsg.payload.command_id = msg._msgid;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "motor-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "motor-command-validator",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Motor Command Validator",
+        "func": "// Validate motor command parameters\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['move_forward', 'move_backward', 'rotate_left', 'rotate_right', 'stop'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid action: ${command.action}`, msg);\n    return null;\n}\n\n// Validate parameters if they exist\nif (command.parameters) {\n    const params = command.parameters;\n    \n    // Validate distance (1-200 cm)\n    if (params.distance !== undefined) {\n        if (typeof params.distance !== 'number' || params.distance < 1 || params.distance > 200) {\n            node.error(`Invalid distance: ${params.distance}. Must be between 1-200 cm`, msg);\n            return null;\n        }\n    }\n    \n    // Validate angle (1-360 degrees)\n    if (params.angle !== undefined) {\n        if (typeof params.angle !== 'number' || params.angle < 1 || params.angle > 360) {\n            node.error(`Invalid angle: ${params.angle}. Must be between 1-360 degrees`, msg);\n            return null;\n        }\n    }\n    \n    // Validate speed (0.1-1.0)\n    if (params.speed !== undefined) {\n        if (typeof params.speed !== 'number' || params.speed < 0.1 || params.speed > 1.0) {\n            node.error(`Invalid speed: ${params.speed}. Must be between 0.1-1.0`, msg);\n            return null;\n        }\n    }\n}\n\n// Add final metadata\nif (!command.timestamp) {\n    command.timestamp = new Date().toISOString();\n}\nif (!command.command_id) {\n    command.command_id = msg._msgid;\n}\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/motors';\nmsg.payload = command;\n\nnode.log(`Valid motor command: ${JSON.stringify(command)}`);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 180,
+        "wires": [
+            [
+                "motor-mqtt-publisher"
+            ]
+        ]
+    },
+    {
+        "id": "motor-mqtt-publisher",
+        "type": "mqtt out",
+        "z": "command-flows-tab",
+        "name": "Motor Commands",
+        "topic": "orchestrator/cmd/motors",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker-config",
+        "x": 860,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "ui-mission-start-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Start Mission",
+        "group": "ui-group-mission-control",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Start",
+        "tooltip": "Start mission execution",
+        "color": "white",
+        "bgcolor": "green",
+        "className": "",
+        "icon": "play_arrow",
+        "payload": "{\"action\":\"start_mission\"}",
+        "payloadType": "json",
+        "topic": "mission_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "mission-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "ui-mission-pause-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Pause Mission",
+        "group": "ui-group-mission-control",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Pause",
+        "tooltip": "Pause current mission",
+        "color": "white",
+        "bgcolor": "orange",
+        "className": "",
+        "icon": "pause",
+        "payload": "{\"action\":\"pause_mission\"}",
+        "payloadType": "json",
+        "topic": "mission_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 540,
+        "wires": [
+            [
+                "mission-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "ui-mission-stop-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Stop Mission",
+        "group": "ui-group-mission-control",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Stop",
+        "tooltip": "Stop current mission",
+        "color": "white",
+        "bgcolor": "red",
+        "className": "",
+        "icon": "stop",
+        "payload": "{\"action\":\"stop_mission\"}",
+        "payloadType": "json",
+        "topic": "mission_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 580,
+        "wires": [
+            [
+                "mission-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "ui-mission-reset-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Reset Mission",
+        "group": "ui-group-mission-control",
+        "order": 4,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "Reset mission to beginning",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "refresh",
+        "payload": "{\"action\":\"reset_mission\"}",
+        "payloadType": "json",
+        "topic": "mission_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 620,
+        "wires": [
+            [
+                "mission-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "mission-command-validator",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Mission Command Validator",
+        "func": "// Validate mission command parameters\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['start_mission', 'pause_mission', 'stop_mission', 'reset_mission'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid mission action: ${command.action}`, msg);\n    return null;\n}\n\n// Add command metadata\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/mission';\nmsg.payload = command;\n\nnode.log(`Valid mission command: ${JSON.stringify(command)}`);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 560,
+        "wires": [
+            [
+                "mission-mqtt-publisher"
+            ]
+        ]
+    },
+    {
+        "id": "mission-mqtt-publisher",
+        "type": "mqtt out",
+        "z": "command-flows-tab",
+        "name": "Mission Commands",
+        "topic": "orchestrator/cmd/mission",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker-config",
+        "x": 620,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "ui-emergency-stop-btn",
+        "type": "ui_button",
+        "z": "command-flows-tab",
+        "name": "Emergency Stop",
+        "group": "ui-group-emergency",
+        "order": 1,
+        "width": 12,
+        "height": 2,
+        "passthru": false,
+        "label": "🚨 EMERGENCY STOP 🚨",
+        "tooltip": "Immediately stop all robot operations",
+        "color": "white",
+        "bgcolor": "#CC0000",
+        "className": "",
+        "icon": "warning",
+        "payload": "{\"action\":\"emergency_stop\",\"reason\":\"user_initiated\"}",
+        "payloadType": "json",
+        "topic": "emergency_command",
+        "topicType": "str",
+        "x": 150,
+        "y": 700,
+        "wires": [
+            [
+                "emergency-command-validator"
+            ]
+        ]
+    },
+    {
+        "id": "emergency-command-validator",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Emergency Command Validator",
+        "func": "// Validate emergency command\nconst command = msg.payload;\n\n// Emergency commands are always valid but need proper formatting\nif (command.action !== 'emergency_stop') {\n    command.action = 'emergency_stop';\n}\n\n// Ensure reason is provided\nif (!command.reason) {\n    command.reason = 'user_initiated';\n}\n\n// Add command metadata with high priority\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\ncommand.priority = 'critical';\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/estop';\nmsg.payload = command;\n\nnode.warn(`EMERGENCY STOP ACTIVATED: ${JSON.stringify(command)}`);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 700,
+        "wires": [
+            [
+                "emergency-mqtt-publisher"
+            ]
+        ]
+    },
+    {
+        "id": "emergency-mqtt-publisher",
+        "type": "mqtt out",
+        "z": "command-flows-tab",
+        "name": "Emergency Stop",
+        "topic": "orchestrator/cmd/estop",
+        "qos": "2",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker-config",
+        "x": 620,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "parameter-storage-distance",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Store Distance",
+        "func": "// Store distance parameter in flow context\nflow.set('distance', msg.payload);\nnode.log(`Distance set to: ${msg.payload} cm`);\nreturn null;",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "parameter-storage-angle",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Store Angle",
+        "func": "// Store angle parameter in flow context\nflow.set('angle', msg.payload);\nnode.log(`Angle set to: ${msg.payload} degrees`);\nreturn null;",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "parameter-storage-speed",
+        "type": "function",
+        "z": "command-flows-tab",
+        "name": "Store Speed",
+        "func": "// Store speed parameter in flow context\nflow.set('speed', msg.payload);\nnode.log(`Speed set to: ${msg.payload}`);\nreturn null;",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "test-motor-command-inject",
+        "type": "inject",
+        "z": "command-test-tab",
+        "name": "Test Motor Forward",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "motor_command",
+        "payload": "{\"action\":\"move_forward\",\"parameters\":{\"distance\":50,\"speed\":0.7}}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "test-motor-validator"
+            ]
+        ]
+    },
+    {
+        "id": "test-motor-validator",
+        "type": "function",
+        "z": "command-test-tab",
+        "name": "Test Motor Validator",
+        "func": "// This is the same validation logic as the main motor validator\n// Used for testing command validation without UI interaction\n\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['move_forward', 'move_backward', 'rotate_left', 'rotate_right', 'stop'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid action: ${command.action}`, msg);\n    return null;\n}\n\n// Validate parameters if they exist\nif (command.parameters) {\n    const params = command.parameters;\n    \n    // Validate distance (1-200 cm)\n    if (params.distance !== undefined) {\n        if (typeof params.distance !== 'number' || params.distance < 1 || params.distance > 200) {\n            node.error(`Invalid distance: ${params.distance}. Must be between 1-200 cm`, msg);\n            return null;\n        }\n    }\n    \n    // Validate angle (1-360 degrees)\n    if (params.angle !== undefined) {\n        if (typeof params.angle !== 'number' || params.angle < 1 || params.angle > 360) {\n            node.error(`Invalid angle: ${params.angle}. Must be between 1-360 degrees`, msg);\n            return null;\n        }\n    }\n    \n    // Validate speed (0.1-1.0)\n    if (params.speed !== undefined) {\n        if (typeof params.speed !== 'number' || params.speed < 0.1 || params.speed > 1.0) {\n            node.error(`Invalid speed: ${params.speed}. Must be between 0.1-1.0`, msg);\n            return null;\n        }\n    }\n}\n\n// Add final metadata\nif (!command.timestamp) {\n    command.timestamp = new Date().toISOString();\n}\nif (!command.command_id) {\n    command.command_id = msg._msgid;\n}\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/motors';\nmsg.payload = command;\n\nnode.log(`Test - Valid motor command: ${JSON.stringify(command)}`);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "test-command-debug"
+            ]
+        ]
+    },
+    {
+        "id": "test-invalid-command-inject",
+        "type": "inject",
+        "z": "command-test-tab",
+        "name": "Test Invalid Command",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "motor_command",
+        "payload": "{\"action\":\"invalid_action\",\"parameters\":{\"distance\":500,\"speed\":2.0}}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "test-motor-validator"
+            ]
+        ]
+    },
+    {
+        "id": "test-mission-command-inject",
+        "type": "inject",
+        "z": "command-test-tab",
+        "name": "Test Mission Start",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mission_command",
+        "payload": "{\"action\":\"start_mission\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "test-mission-validator"
+            ]
+        ]
+    },
+    {
+        "id": "test-mission-validator",
+        "type": "function",
+        "z": "command-test-tab",
+        "name": "Test Mission Validator",
+        "func": "// Test mission command validation\nconst command = msg.payload;\n\n// Validation rules\nconst validActions = ['start_mission', 'pause_mission', 'stop_mission', 'reset_mission'];\n\n// Check if action is valid\nif (!validActions.includes(command.action)) {\n    node.error(`Invalid mission action: ${command.action}`, msg);\n    return null;\n}\n\n// Add command metadata\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/mission';\nmsg.payload = command;\n\nnode.log(`Test - Valid mission command: ${JSON.stringify(command)}`);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "test-command-debug"
+            ]
+        ]
+    },
+    {
+        "id": "test-emergency-inject",
+        "type": "inject",
+        "z": "command-test-tab",
+        "name": "Test Emergency Stop",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "emergency_command",
+        "payload": "{\"action\":\"emergency_stop\",\"reason\":\"test_scenario\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "test-emergency-validator"
+            ]
+        ]
+    },
+    {
+        "id": "test-emergency-validator",
+        "type": "function",
+        "z": "command-test-tab",
+        "name": "Test Emergency Validator",
+        "func": "// Test emergency command validation\nconst command = msg.payload;\n\n// Emergency commands are always valid but need proper formatting\nif (command.action !== 'emergency_stop') {\n    command.action = 'emergency_stop';\n}\n\n// Ensure reason is provided\nif (!command.reason) {\n    command.reason = 'test_initiated';\n}\n\n// Add command metadata with high priority\ncommand.timestamp = new Date().toISOString();\ncommand.command_id = msg._msgid;\ncommand.priority = 'critical';\n\n// Set topic for MQTT publishing\nmsg.topic = 'orchestrator/cmd/estop';\nmsg.payload = command;\n\nnode.warn(`Test - EMERGENCY STOP: ${JSON.stringify(command)}`);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 260,
+        "wires": [
+            [
+                "test-command-debug"
+            ]
+        ]
+    },
+    {
+        "id": "test-command-debug",
+        "type": "debug",
+        "z": "command-test-tab",
+        "name": "Test Command Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "command-validation-summary",
+        "type": "comment",
+        "z": "command-test-tab",
+        "name": "Command Validation Summary",
+        "info": "## Command Flow Validation\n\nThis tab contains test flows to validate the command generation and validation logic:\n\n### Motor Commands\n- **Valid Actions**: move_forward, move_backward, rotate_left, rotate_right, stop\n- **Distance**: 1-200 cm\n- **Angle**: 1-360 degrees  \n- **Speed**: 0.1-1.0\n\n### Mission Commands\n- **Valid Actions**: start_mission, pause_mission, stop_mission, reset_mission\n\n### Emergency Commands\n- **Action**: emergency_stop (always valid)\n- **Priority**: critical\n- **QoS**: 2 (exactly once delivery)\n\n### MQTT Topics\n- Motor: `orchestrator/cmd/motors`\n- Mission: `orchestrator/cmd/mission`\n- Emergency: `orchestrator/cmd/estop`\n\n### Message Format\n```json\n{\n  \"timestamp\": \"2024-01-15T10:30:00Z\",\n  \"command_id\": \"uuid-string\",\n  \"action\": \"move_forward\",\n  \"parameters\": {\n    \"distance\": 100,\n    \"speed\": 0.5\n  }\n}\n```",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    }
+]
