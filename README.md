@@ -138,29 +138,76 @@ orchestrator-platform/
    ```bash
    git clone <repository-url>
    cd orchestrator-platform
+   
+   # Create virtual environment (recommended)
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   
+   # Install dependencies
    pip install -r requirements.txt
+   pip install -r hal_service/requirements.txt
    ```
 
-2. **Configure Hardware**
+2. **Configure System Dependencies**
+   ```bash
+   # On Raspberry Pi
+   sudo apt update
+   sudo apt install mosquitto mosquitto-clients nodejs npm
+   sudo systemctl enable mosquitto
+   sudo systemctl start mosquitto
+   
+   # Install Node-RED
+   sudo npm install -g --unsafe-perm node-red
+   sudo npm install -g --unsafe-perm node-red-dashboard
+   ```
+
+3. **Configure Hardware**
    ```bash
    cp configs/example_config.yaml configs/config.yaml
    # Edit configs/config.yaml with your hardware settings
+   
+   # Enable I2C and SPI (on Raspberry Pi)
+   sudo raspi-config
+   # Navigate to Interface Options -> I2C -> Enable
+   # Navigate to Interface Options -> SPI -> Enable
+   
+   # Add user to required groups
+   sudo usermod -a -G gpio,i2c,spi $USER
+   # Logout and login again for group changes to take effect
    ```
 
-3. **Start Core Services**
+4. **Verify Installation**
    ```bash
-   # Start HAL service
+   # Test MQTT broker
+   mosquitto_pub -h localhost -t test -m "hello"
+   mosquitto_sub -h localhost -t test
+   
+   # Run basic tests
+   python run_tests.py
+   
+   # Run demo to verify setup
+   python run_demo.py demo_mock_hal
+   ```
+
+5. **Start Core Services**
+   ```bash
+   # Terminal 1: Start HAL service
    python orchestrator_hal.py
    
-   # In separate terminals:
+   # Terminal 2: Start safety monitor
    python safety_monitor_service.py
+   
+   # Terminal 3: Start state manager
    python state_manager_service.py
+   
+   # Terminal 4: Start Node-RED (optional)
+   node-red
    ```
 
-4. **Launch Node-RED Interface**
+6. **Access Web Interface**
    ```bash
-   # See docs/node_red_config.md for setup instructions
-   node-red
+   # Node-RED editor: http://localhost:1880
+   # Dashboard: http://localhost:1880/ui
    ```
 
 ## Installation
@@ -248,6 +295,117 @@ MQTT-based communication providing:
 - **Retained Messages**: State persistence across connections
 
 ## Development Guide
+
+### Developer Setup
+
+#### Prerequisites for Development
+
+- Python 3.8+ with pip
+- Git
+- Code editor (VS Code recommended)
+- Hardware (Raspberry Pi 4 recommended for full testing)
+
+#### Complete Development Environment Setup
+
+1. **Clone Repository**
+   ```bash
+   git clone <repository-url>
+   cd orchestrator-platform
+   ```
+
+2. **Setup Python Environment**
+   ```bash
+   # Create and activate virtual environment
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   # OR
+   venv\Scripts\activate     # Windows
+   
+   # Upgrade pip and install dependencies
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   pip install -r hal_service/requirements.txt
+   
+   # Install development dependencies
+   pip install pytest pytest-cov flake8 black mypy
+   ```
+
+3. **Configure Development Environment**
+   ```bash
+   # Copy example configuration
+   cp configs/example_config.yaml configs/config.yaml
+   
+   # Set Python path for imports
+   export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+   # Add to ~/.bashrc or ~/.zshrc for persistence
+   echo 'export PYTHONPATH="${PYTHONPATH}:'$(pwd)'"' >> ~/.bashrc
+   ```
+
+4. **Install System Dependencies (Development Machine)**
+   ```bash
+   # Ubuntu/Debian
+   sudo apt install mosquitto mosquitto-clients
+   
+   # macOS
+   brew install mosquitto
+   
+   # Start MQTT broker
+   sudo systemctl start mosquitto  # Linux
+   brew services start mosquitto   # macOS
+   ```
+
+5. **Setup Node-RED (Optional)**
+   ```bash
+   # Install Node.js and npm if not already installed
+   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   
+   # Install Node-RED
+   sudo npm install -g --unsafe-perm node-red
+   sudo npm install -g --unsafe-perm node-red-dashboard
+   
+   # Configure Node-RED
+   mkdir -p ~/.node-red
+   cp configs/node_red_config/settings.js ~/.node-red/
+   ```
+
+6. **Verify Development Setup**
+   ```bash
+   # Run all tests
+   python run_tests.py
+   
+   # Run linting
+   flake8 hal_service/ tests/
+   
+   # Run type checking
+   mypy hal_service/
+   
+   # Run demo
+   python run_demo.py demo_mock_hal
+   ```
+
+#### IDE Configuration
+
+**VS Code Setup** (recommended):
+
+1. Install Python extension
+2. Configure settings.json:
+   ```json
+   {
+     "python.defaultInterpreterPath": "./venv/bin/python",
+     "python.linting.enabled": true,
+     "python.linting.flake8Enabled": true,
+     "python.formatting.provider": "black",
+     "python.testing.pytestEnabled": true,
+     "python.testing.pytestArgs": ["tests/"]
+   }
+   ```
+
+3. Install recommended extensions:
+   - Python
+   - Python Docstring Generator
+   - GitLens
+   - YAML
 
 ### Code Organization
 
@@ -457,34 +615,52 @@ SystemD service files in `configs/systemd/`:
 
 ## Documentation
 
-### Component Documentation
+### Complete Documentation Suite
 
-Detailed documentation for each component in `docs/hal_service/`:
+The `docs/` directory contains comprehensive documentation:
 
-- **README_ENCODER.md** - Encoder sensor API and usage
-- **README_LIDAR.md** - LIDAR sensor integration guide
-- **README_LOGGING.md** - Logging service configuration
-- **README_MOTOR.md** - Motor controller interface
-- **README_MQTT.md** - MQTT client usage patterns
-- **README_SAFETY.md** - Safety system architecture
-- **README_STATE_MANAGER.md** - State management guide
+#### User Documentation
+- **[User Guide](docs/USER_GUIDE.md)** - Complete guide for operating the robot via dashboard
+- **[MQTT Reference](docs/MQTT_REFERENCE.md)** - Complete MQTT communication protocol reference
+- **[System Access Guide](docs/SYSTEM_ACCESS_GUIDE.md)** - System configuration and access
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Installation and deployment instructions
 
-### API Documentation
+#### Component Documentation
+- **[HAL Service Documentation](docs/hal_service/)** - Hardware abstraction layer components
+  - Encoder sensor API and usage
+  - LiDAR sensor integration guide
+  - Logging service configuration
+  - Motor controller interface
+  - MQTT client usage patterns
+  - Safety system architecture
+  - State management guide
 
-Each component provides comprehensive API documentation:
+#### Implementation Documentation
+- **[Node-RED Documentation](docs/node-red/)** - Control interface implementation
+  - Command flow implementation
+  - Telemetry flow implementation
+  - Dashboard UI implementation
+  - Mission sequencer implementation
 
-```python
-# Example: Motor Controller API
-motor = MotorController(config)
-motor.set_speed(50)  # Set speed (0-100%)
-motor.stop()         # Emergency stop
-motor.get_status()   # Get current status
+#### Development Documentation
+- **[Mock HAL Documentation](docs/mock-hal/)** - Development and testing tools
+- **[Node-RED Configuration](docs/node_red_config.md)** - Node-RED integration setup
+
+### Quick Documentation Access
+
+```bash
+# View main documentation index
+cat docs/README.md
+
+# Access user guide
+cat docs/USER_GUIDE.md
+
+# Review MQTT protocol
+cat docs/MQTT_REFERENCE.md
+
+# Check component documentation
+ls docs/hal_service/
 ```
-
-### Setup Guides
-
-- `docs/node_red_config.md` - Node-RED integration setup
-- `docs/README.md` - Documentation index and navigation
 
 ## Contributing
 

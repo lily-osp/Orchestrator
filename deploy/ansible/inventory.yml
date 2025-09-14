@@ -1,0 +1,35 @@
+---
+# Ansible Inventory for Orchestrator Platform Deployment
+
+all:
+  children:
+    raspberry_pi:
+      hosts:
+        orchestrator-pi-01:
+          ansible_host: 192.168.1.100
+          ansible_user: pi
+          ansible_ssh_private_key_file: ~/.ssh/id_rsa
+        orchestrator-pi-02:
+          ansible_host: 192.168.1.101
+          ansible_user: pi
+          ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      vars:
+        # Common variables for all Raspberry Pi hosts
+        ansible_python_interpreter: /usr/bin/python3
+        orchestrator_user: orchestrator
+        orchestrator_home: /opt/orchestrator
+        node_red_version: "3.1.0"
+        
+        # Network configuration
+        mqtt_broker_host: localhost
+        mqtt_broker_port: 1883
+        node_red_port: 1880
+        
+        # Hardware configuration
+        enable_gpio: true
+        enable_i2c: true
+        enable_spi: true
+        
+        # Security settings
+        enable_firewall: true
+        ssh_port: 22

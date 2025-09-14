@@ -1,0 +1,342 @@
+---
+# Orchestrator Platform - Ansible Deployment Playbook
+# This playbook automates the deployment of the Orchestrator platform on Raspberry Pi devices
+
+- name: Deploy Orchestrator Platform
+  hosts: raspberry_pi
+  become: yes
+  vars:
+    orchestrator_user: orchestrator
+    orchestrator_home: /opt/orchestrator
+    node_red_version: "3.1.0"
+    python_version: "3.9"
+    project_repo: "https://github.com/your-org/orchestrator-platform.git"
+    
+  tasks:
+    - name: Update system packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+        cache_valid_time: 3600
+      tags: system
+
+    - name: Install system dependencies
+      apt:
+        name:
+          - git
+          - curl
+          - wget
+          - vim
+          - htop
+          - tree
+          - python3
+          - python3-pip
+          - python3-venv
+          - python3-dev
+          - python3-rpi.gpio
+          - python3-smbus
+          - python3-serial
+          - build-essential
+          - ufw
+        state: present
+      tags: system
+
+    - name: Install Node.js repository key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+      tags: nodejs
+
+    - name: Add Node.js repository
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_18.x {{ ansible_distribution_release }} main"
+        state: present
+      tags: nodejs
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+      tags: nodejs
+
+    - name: Install Mosquitto MQTT broker
+      apt:
+        name:
+          - mosquitto
+          - mosquitto-clients
+        state: present
+      tags: mqtt
+
+    - name: Create Mosquitto configuration
+      copy:
+        content: |
+          # Orchestrator Platform MQTT Configuration
+          listener 1883 localhost
+          allow_anonymous true
+          max_keepalive 300
+          max_connections 100
+          
+          # Logging
+          log_dest file /var/log/mosquitto/mosquitto.log
+          log_type error
+          log_type warning
+          log_type notice
+          log_type information
+          log_timestamp true
+        dest: /etc/mosquitto/conf.d/orchestrator.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart mosquitto
+      tags: mqtt
+
+    - name: Create orchestrator user
+      user:
+        name: "{{ orchestrator_user }}"
+        system: yes
+        home: "{{ orchestrator_home }}"
+        shell: /bin/bash
+        groups: gpio,i2c,spi,dialout
+        append: yes
+      tags: user
+
+    - name: Create orchestrator directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ orchestrator_user }}"
+        group: "{{ orchestrator_user }}"
+        mode: '0755'
+      loop:
+        - "{{ orchestrator_home }}"
+        - "{{ orchestrator_home }}/logs"
+        - "{{ orchestrator_home }}/configs"
+        - "{{ orchestrator_home }}/data"
+        - "{{ orchestrator_home }}/.node-red"
+      tags: user
+
+    - name: Clone orchestrator project
+      git:
+        repo: "{{ project_repo }}"
+        dest: "{{ orchestrator_home }}"
+        force: yes
+      become_user: "{{ orchestrator_user }}"
+      tags: project
+
+    - name: Create Python virtual environment
+      command: python3 -m venv "{{ orchestrator_home }}/venv"
+      become_user: "{{ orchestrator_user }}"
+      args:
+        creates: "{{ orchestrator_home }}/venv/bin/python"
+      tags: python
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ orchestrator_home }}/requirements.txt"
+        virtualenv: "{{ orchestrator_home }}/venv"
+      become_user: "{{ orchestrator_user }}"
+      tags: python
+
+    - name: Install Node-RED globally
+      npm:
+        name: "{{ item }}"
+        global: yes
+        unsafe_perm: yes
+      loop:
+        - "node-red@{{ node_red_version }}"
+        - node-red-dashboard
+      tags: nodejs
+
+    - name: Copy Node-RED configuration
+      copy:
+        src: "{{ orchestrator_home }}/configs/node_red_config/"
+        dest: "{{ orchestrator_home }}/.node-red/"
+        owner: "{{ orchestrator_user }}"
+        group: "{{ orchestrator_user }}"
+        mode: preserve
+        remote_src: yes
+      tags: nodejs
+
+    - name: Create orchestrator systemd target
+      copy:
+        content: |
+          [Unit]
+          Description=Orchestrator Platform Services
+          Documentation=https://github.com/your-org/orchestrator-platform
+          Wants=mosquitto.service
+          After=mosquitto.service
+          
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/orchestrator.target
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload systemd
+      tags: systemd
+
+    - name: Copy systemd service files
+      copy:
+        src: "{{ orchestrator_home }}/configs/systemd/{{ item }}"
+        dest: "/etc/systemd/system/{{ item }}"
+        owner: root
+        group: root
+        mode: '0644'
+        remote_src: yes
+      loop:
+        - orchestrator-safety.service
+        - state-manager.service
+        - node-red.service
+      notify: reload systemd
+      tags: systemd
+
+    - name: Update systemd service files with correct paths
+      replace:
+        path: "/etc/systemd/system/{{ item }}"
+        regexp: '/home/pi/orchestrator-platform'
+        replace: "{{ orchestrator_home }}"
+      loop:
+        - orchestrator-safety.service
+        - state-manager.service
+        - node-red.service
+      notify: reload systemd
+      tags: systemd
+
+    - name: Update systemd service files with correct user
+      replace:
+        path: "/etc/systemd/system/{{ item }}"
+        regexp: 'User=pi'
+        replace: "User={{ orchestrator_user }}"
+      loop:
+        - orchestrator-safety.service
+        - state-manager.service
+      notify: reload systemd
+      tags: systemd
+
+    - name: Update systemd service files with correct group
+      replace:
+        path: "/etc/systemd/system/{{ item }}"
+        regexp: 'Group=pi'
+        replace: "Group={{ orchestrator_user }}"
+      loop:
+        - orchestrator-safety.service
+        - state-manager.service
+      notify: reload systemd
+      tags: systemd
+
+    - name: Create GPIO udev rules
+      copy:
+        content: |
+          # GPIO access for orchestrator user
+          SUBSYSTEM=="gpio", GROUP="gpio", MODE="0664"
+          SUBSYSTEM=="i2c-dev", GROUP="i2c", MODE="0664"
+          SUBSYSTEM=="spidev", GROUP="spi", MODE="0664"
+          KERNEL=="ttyUSB*", GROUP="dialout", MODE="0664"
+          KERNEL=="ttyACM*", GROUP="dialout", MODE="0664"
+        dest: /etc/udev/rules.d/99-orchestrator-gpio.rules
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload udev
+      tags: gpio
+
+    - name: Configure firewall rules
+      ufw:
+        rule: "{{ item.rule }}"
+        port: "{{ item.port | default(omit) }}"
+        proto: "{{ item.proto | default(omit) }}"
+        src: "{{ item.src | default(omit) }}"
+      loop:
+        - { rule: "deny", direction: "incoming" }
+        - { rule: "allow", direction: "outgoing" }
+        - { rule: "allow", port: "ssh" }
+        - { rule: "allow", port: "1880", proto: "tcp" }
+        - { rule: "allow", port: "1883", proto: "tcp", src: "192.168.0.0/16" }
+        - { rule: "allow", port: "1883", proto: "tcp", src: "10.0.0.0/8" }
+        - { rule: "allow", port: "1883", proto: "tcp", src: "172.16.0.0/12" }
+      tags: firewall
+
+    - name: Enable firewall
+      ufw:
+        state: enabled
+      tags: firewall
+
+    - name: Create startup script
+      copy:
+        content: |
+          #!/bin/bash
+          
+          # Orchestrator Platform Startup Script
+          
+          echo "Starting Orchestrator Platform..."
+          
+          # Start all services
+          sudo systemctl start mosquitto.service
+          sudo systemctl start orchestrator.target
+          
+          # Wait for services to start
+          sleep 5
+          
+          # Check service status
+          echo "Service Status:"
+          sudo systemctl status mosquitto.service --no-pager -l
+          sudo systemctl status orchestrator-safety.service --no-pager -l
+          sudo systemctl status state-manager.service --no-pager -l
+          sudo systemctl status node-red.service --no-pager -l
+          
+          echo "Orchestrator Platform started successfully!"
+          echo "Node-RED Dashboard: http://$(hostname -I | awk '{print $1}'):1880"
+        dest: "{{ orchestrator_home }}/start_orchestrator.sh"
+        owner: "{{ orchestrator_user }}"
+        group: "{{ orchestrator_user }}"
+        mode: '0755'
+      tags: scripts
+
+    - name: Create log rotation configuration
+      copy:
+        content: |
+          {{ orchestrator_home }}/logs/*.log {
+              daily
+              missingok
+              rotate 7
+              compress
+              delaycompress
+              notifempty
+              create 644 {{ orchestrator_user }} {{ orchestrator_user }}
+              postrotate
+                  systemctl reload orchestrator-safety.service > /dev/null 2>&1 || true
+                  systemctl reload state-manager.service > /dev/null 2>&1 || true
+              endscript
+          }
+        dest: /etc/logrotate.d/orchestrator
+        owner: root
+        group: root
+        mode: '0644'
+      tags: logging
+
+    - name: Enable and start services
+      systemd:
+        name: "{{ item }}"
+        enabled: yes
+        daemon_reload: yes
+      loop:
+        - mosquitto.service
+        - orchestrator.target
+        - orchestrator-safety.service
+        - state-manager.service
+        - node-red.service
+      tags: systemd
+
+  handlers:
+    - name: restart mosquitto
+      systemd:
+        name: mosquitto
+        state: restarted
+
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: reload udev
+      command: udevadm control --reload-rules && udevadm trigger

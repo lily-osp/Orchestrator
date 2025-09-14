@@ -63,6 +63,11 @@ configs/node_red_config/yarn-error.log*
 # Hardware specific
 *.log
 *.pid
+*.log.*
+*.pid.*
+*.cache
+*.cache.*
+*.cache/*
 
 # OS
 .DS_Store

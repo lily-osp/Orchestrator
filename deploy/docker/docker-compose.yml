@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: orchestrator-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    networks:
+      - orchestrator-network
+
+  # Orchestrator Platform
+  orchestrator:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+      target: development
+    container_name: orchestrator-platform
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    ports:
+      - "1880:1880"
+    volumes:
+      - orchestrator_logs:/opt/orchestrator/logs
+      - orchestrator_data:/opt/orchestrator/data
+      - ./config.yaml:/opt/orchestrator/config.yaml:ro
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - NODE_RED_PORT=1880
+      - PYTHONPATH=/opt/orchestrator
+    networks:
+      - orchestrator-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1880"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # HAL Service (Mock for development)
+  hal-service:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+      target: development
+    container_name: orchestrator-hal
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    volumes:
+      - orchestrator_logs:/opt/orchestrator/logs
+      - ./config.yaml:/opt/orchestrator/config.yaml:ro
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - PYTHONPATH=/opt/orchestrator
+      - HAL_MODE=mock
+    networks:
+      - orchestrator-network
+    command: ["python", "/opt/orchestrator/orchestrator_hal.py", "--config", "/opt/orchestrator/config.yaml"]
+
+  # Safety Monitor Service
+  safety-monitor:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+      target: development
+    container_name: orchestrator-safety
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    volumes:
+      - orchestrator_logs:/opt/orchestrator/logs
+      - ./config.yaml:/opt/orchestrator/config.yaml:ro
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - PYTHONPATH=/opt/orchestrator
+    networks:
+      - orchestrator-network
+    command: ["python", "/opt/orchestrator/safety_monitor_service.py", "--config", "/opt/orchestrator/config.yaml"]
+
+  # State Manager Service
+  state-manager:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+      target: development
+    container_name: orchestrator-state
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    volumes:
+      - orchestrator_logs:/opt/orchestrator/logs
+      - ./config.yaml:/opt/orchestrator/config.yaml:ro
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - PYTHONPATH=/opt/orchestrator
+    networks:
+      - orchestrator-network
+    command: ["python", "/opt/orchestrator/state_manager_service.py", "--config", "/opt/orchestrator/config.yaml"]
+
+volumes:
+  mosquitto_data:
+  mosquitto_logs:
+  orchestrator_logs:
+  orchestrator_data:
+
+networks:
+  orchestrator-network:
+    driver: bridge
