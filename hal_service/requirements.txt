@@ -1,0 +1,12 @@
+# Core dependencies for HAL service
+paho-mqtt>=1.6.0
+pydantic>=1.10.0
+PyYAML>=6.0
+RPi.GPIO>=0.7.1
+adafruit-circuitpython-motor>=3.4.0
+
+# Development dependencies
+pytest>=7.0.0
+pytest-cov>=4.0.0
+flake8>=5.0.0
+black>=22.0.0

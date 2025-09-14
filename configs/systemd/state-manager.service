@@ -1,0 +1,39 @@
+[Unit]
+Description=Orchestrator State Manager Service
+Documentation=https://github.com/orchestrator-platform/docs
+After=network.target mosquitto.service
+Wants=mosquitto.service
+PartOf=orchestrator.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/orchestrator
+ExecStart=/usr/bin/python3 /opt/orchestrator/state_manager_service.py --config /opt/orchestrator/config.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=orchestrator-state-manager
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/orchestrator/logs
+ReadOnlyPaths=/opt/orchestrator
+
+# Resource limits
+MemoryMax=256M
+CPUQuota=50%
+
+# Environment
+Environment=PYTHONPATH=/opt/orchestrator
+Environment=MQTT_HOST=localhost
+
+[Install]
+WantedBy=orchestrator.target
+Also=mosquitto.service

@@ -1,0 +1,49 @@
+[Unit]
+Description=Orchestrator Safety Monitor Service
+Documentation=https://github.com/orchestrator-platform/docs
+After=network.target mosquitto.service
+Wants=mosquitto.service
+PartOf=orchestrator.target
+
+[Service]
+Type=simple
+User=orchestrator
+Group=orchestrator
+WorkingDirectory=/opt/orchestrator
+ExecStart=/opt/orchestrator/venv/bin/python /opt/orchestrator/safety_monitor_service.py --config /opt/orchestrator/config.yaml --priority high --pid-file /var/run/orchestrator-safety.pid
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+Restart=always
+RestartSec=5
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/orchestrator/logs /var/run
+CapabilityBoundingSet=CAP_SYS_NICE
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Process priority (high priority for safety-critical operation)
+Nice=-10
+IOSchedulingClass=1
+IOSchedulingPriority=4
+
+# Environment
+Environment=PYTHONPATH=/opt/orchestrator
+Environment=MQTT_HOST=localhost
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=orchestrator-safety
+
+[Install]
+WantedBy=orchestrator.target
+Also=orchestrator.target
