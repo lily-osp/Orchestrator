@@ -104,7 +104,7 @@ This implementation provides comprehensive Node-RED flows that translate UI acti
 ### Message Format
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "command_id": "unique-message-id", 
   "action": "move_forward",
   "parameters": {

@@ -88,7 +88,7 @@ All messages include common fields:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "component_name",
   "version": "1.0"
@@ -107,7 +107,7 @@ Error messages follow a standardized format:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "component_name",
   "version": "1.0",
@@ -136,7 +136,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Move Forward Command
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "node_red_dashboard",
   "version": "1.0",
@@ -155,7 +155,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Rotate Command
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "node_red_dashboard",
   "version": "1.0",
@@ -174,7 +174,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Stop Command
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "safety_monitor",
   "version": "1.0",
@@ -191,7 +191,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Emergency Stop Command
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "safety_monitor",
   "version": "1.0",
@@ -212,7 +212,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Start Mission Command
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "node_red_dashboard",
   "version": "1.0",
@@ -238,7 +238,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Pause Mission Command
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "node_red_dashboard",
   "version": "1.0",
@@ -259,7 +259,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Configure Safety Parameters
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "node_red_dashboard",
   "version": "1.0",
@@ -283,7 +283,7 @@ Commands are sent to control robot behavior and configure system parameters.
 #### Configure LiDAR
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "node_red_dashboard",
   "version": "1.0",
@@ -311,7 +311,7 @@ Telemetry messages provide real-time sensor data and system information.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "lidar_sensor",
   "version": "1.0",
@@ -344,7 +344,7 @@ Telemetry messages provide real-time sensor data and system information.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "encoder_sensor",
   "version": "1.0",
@@ -377,7 +377,7 @@ Telemetry messages provide real-time sensor data and system information.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "motor_controller",
   "version": "1.0",
@@ -411,7 +411,7 @@ Telemetry messages provide real-time sensor data and system information.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "system_monitor",
   "version": "1.0",
@@ -454,7 +454,7 @@ Status messages provide information about system state and component health.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "state_manager",
   "version": "1.0",
@@ -495,7 +495,7 @@ Status messages provide information about system state and component health.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "mission_controller",
   "version": "1.0",
@@ -507,7 +507,7 @@ Status messages provide information about system state and component health.
       "current_step": 2,
       "total_steps": 4,
       "percentage": 50.0,
-      "estimated_completion": "2024-01-15T10:35:00.000Z"
+      "estimated_completion": "2025-01-15T10:35:00.000Z"
     },
     "current_waypoint": {
       "index": 1,
@@ -516,7 +516,7 @@ Status messages provide information about system state and component health.
       "eta": 15.0
     },
     "performance": {
-      "start_time": "2024-01-15T10:28:00.000Z",
+      "start_time": "2025-01-15T10:28:00.000Z",
       "elapsed_time": 120.0,
       "average_speed": 0.4,
       "distance_traveled": 1.8
@@ -531,7 +531,7 @@ Status messages provide information about system state and component health.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "safety_monitor",
   "version": "1.0",
@@ -556,7 +556,7 @@ Status messages provide information about system state and component health.
       "communication": "active",
       "sensors": "active",
       "motors": "active",
-      "last_heartbeat": "2024-01-15T10:29:59.000Z"
+      "last_heartbeat": "2025-01-15T10:29:59.000Z"
     }
   }
 }
@@ -568,7 +568,7 @@ Status messages provide information about system state and component health.
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "service_monitor",
   "version": "1.0",
@@ -580,7 +580,7 @@ Status messages provide information about system state and component health.
         "uptime": 3600,
         "cpu_usage": 15.2,
         "memory_usage": 128,
-        "last_heartbeat": "2024-01-15T10:29:59.000Z"
+        "last_heartbeat": "2025-01-15T10:29:59.000Z"
       },
       "safety_monitor": {
         "status": "running",
@@ -588,7 +588,7 @@ Status messages provide information about system state and component health.
         "uptime": 3598,
         "cpu_usage": 8.5,
         "memory_usage": 64,
-        "last_heartbeat": "2024-01-15T10:29:59.500Z"
+        "last_heartbeat": "2025-01-15T10:29:59.500Z"
       },
       "state_manager": {
         "status": "running",
@@ -596,7 +596,7 @@ Status messages provide information about system state and component health.
         "uptime": 3595,
         "cpu_usage": 5.1,
         "memory_usage": 48,
-        "last_heartbeat": "2024-01-15T10:29:58.800Z"
+        "last_heartbeat": "2025-01-15T10:29:58.800Z"
       }
     },
     "overall_health": "good"
@@ -641,7 +641,7 @@ Commands should be acknowledged with response messages:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:01.000Z",
+  "timestamp": "2025-01-15T10:30:01.000Z",
   "message_id": "uuid-v4-string",
   "source": "motor_controller",
   "version": "1.0",
@@ -669,7 +669,7 @@ Commands should be acknowledged with response messages:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00.123Z",
+  "timestamp": "2025-01-15T10:30:00.123Z",
   "message_id": "uuid-v4-string",
   "source": "lidar_sensor",
   "version": "1.0",
@@ -681,7 +681,7 @@ Commands should be acknowledged with response messages:
     "operation": "read_scan",
     "details": {
       "timeout_duration": 5.0,
-      "last_successful_read": "2024-01-15T10:29:55.000Z",
+      "last_successful_read": "2025-01-15T10:29:55.000Z",
       "retry_count": 3
     },
     "recovery_action": "restart_sensor",
@@ -698,7 +698,7 @@ Commands should be acknowledged with response messages:
 2. **Node-RED publishes command**:
    ```bash
    mosquitto_pub -h localhost -t orchestrator/cmd/motors -m '{
-     "timestamp": "2024-01-15T10:30:00.123Z",
+     "timestamp": "2025-01-15T10:30:00.123Z",
      "message_id": "cmd-001",
      "source": "node_red_dashboard",
      "version": "1.0",
@@ -713,7 +713,7 @@ Commands should be acknowledged with response messages:
    ```bash
    # Published to: orchestrator/status/command_ack
    {
-     "timestamp": "2024-01-15T10:30:00.200Z",
+     "timestamp": "2025-01-15T10:30:00.200Z",
      "message_id": "ack-001",
      "source": "motor_controller",
      "version": "1.0",
@@ -729,7 +729,7 @@ Commands should be acknowledged with response messages:
    ```bash
    # Published to: orchestrator/data/encoders (continuous)
    {
-     "timestamp": "2024-01-15T10:30:01.000Z",
+     "timestamp": "2025-01-15T10:30:01.000Z",
      "data": {
        "odometry": {"distance_traveled": 0.1, "linear_velocity": 0.5}
      }

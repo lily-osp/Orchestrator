@@ -27,7 +27,7 @@ The State Manager Service is responsible for tracking the robot's position, head
 ### Robot State Message
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "position": {
     "x": 1.5,
     "y": 2.3
@@ -49,7 +49,7 @@ The State Manager Service is responsible for tracking the robot's position, head
 ```json
 {
   "action": "reset_odometry",
-  "timestamp": "2024-01-15T10:30:00Z"
+  "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 
@@ -59,7 +59,7 @@ The State Manager Service is responsible for tracking the robot's position, head
   "x": 5.0,
   "y": 3.0,
   "heading": 1.57,
-  "timestamp": "2024-01-15T10:30:00Z"
+  "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 

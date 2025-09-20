@@ -1,43 +1,49 @@
-# 🚀 Orchestrator Platform - System Access Guide
+# Orchestrator Platform - System Access Guide
 
-## 🎉 System Status: READY!
+## System Status: READY!
 
 The complete Mock Hardware Abstraction Layer (HAL) system has been successfully implemented and is ready for use. This guide provides all the information needed to access and interact with the system.
 
-## 🌐 Access Points & URLs
+## Access Points & URLs
 
 ### 1. **Main Dashboard** (Static HTML)
+
 - **URL**: `file:///path/to/orchestrator_dashboard.html`
 - **Description**: Static HTML dashboard with system overview and quick links
 - **Status**: ✅ Available (open the HTML file in any browser)
 
 ### 2. **Node-RED Dashboard** (if Node-RED is installed)
+
 - **URL**: http://localhost:1880/ui
 - **Description**: Full-featured web dashboard with controls and real-time data
 - **Features**: Robot controls, telemetry visualization, LiDAR display
 - **Status**: ⚠️ Requires Node-RED installation
 
 ### 3. **Node-RED Flow Editor** (if Node-RED is installed)
+
 - **URL**: http://localhost:1880
 - **Description**: Visual programming interface for creating robot behaviors
 - **Features**: Drag-and-drop flow creation, MQTT integration
 - **Status**: ⚠️ Requires Node-RED installation
 
 ### 4. **Simple Web Dashboard** (Python Flask)
+
 - **URL**: http://localhost:5000
 - **Description**: Lightweight web interface for basic robot control
 - **Features**: Motor controls, status display, telemetry log
 - **Status**: ⚠️ Requires Flask installation (`pip install flask flask-socketio`)
 
 ### 5. **MQTT Broker**
+
 - **Host**: localhost
 - **Port**: 1883
 - **Description**: Message broker for system communication
 - **Status**: ✅ Simulated (built into Mock HAL)
 
-## 🚀 Quick Start Options
+## Quick Start Options
 
 ### Option 1: View Static Dashboard (Immediate)
+
 ```bash
 # Open the HTML dashboard in your browser
 open orchestrator_dashboard.html
@@ -48,18 +54,21 @@ chrome orchestrator_dashboard.html
 ```
 
 ### Option 2: Run Standalone Demo (No Dependencies)
+
 ```bash
 # Run the complete mock system demo
 python3 demos/standalone_demo.py
 ```
 
 ### Option 3: Run Mock HAL with Simple Tests
+
 ```bash
 # Test core functionality
 python3 tests/test_mock_standalone.py
 ```
 
 ### Option 4: Complete System (Requires Dependencies)
+
 ```bash
 # Install dependencies first
 pip3 install flask flask-socketio paho-mqtt
@@ -69,15 +78,17 @@ python3 demos/run_complete_system.py
 ```
 
 ### Option 5: Quick Setup Script
+
 ```bash
 # Automated setup and launch
 chmod +x quick_start.sh
 ./quick_start.sh
 ```
 
-## 📡 MQTT Interface
+## MQTT Interface
 
 ### Command Topics (Send Commands)
+
 ```
 orchestrator/cmd/left_motor     - Left motor commands
 orchestrator/cmd/right_motor    - Right motor commands
@@ -86,6 +97,7 @@ orchestrator/cmd/state_manager  - State management
 ```
 
 ### Data Topics (Receive Telemetry)
+
 ```
 orchestrator/data/left_encoder   - Left wheel encoder data
 orchestrator/data/right_encoder  - Right wheel encoder data
@@ -95,6 +107,7 @@ orchestrator/data/right_motor    - Right motor telemetry
 ```
 
 ### Status Topics (System Status)
+
 ```
 orchestrator/status/robot        - Robot state (position, heading, velocity)
 orchestrator/status/safety_monitor - Safety system status
@@ -103,15 +116,17 @@ orchestrator/status/hal          - HAL orchestrator status
 ```
 
 ### Acknowledgment Topics (Command Responses)
+
 ```
 orchestrator/ack/left_motor      - Left motor command acknowledgments
 orchestrator/ack/right_motor     - Right motor command acknowledgments
 orchestrator/ack/estop           - Emergency stop acknowledgments
 ```
 
-## 🎮 Example Commands
+## Example Commands
 
 ### Motor Control via MQTT
+
 ```bash
 # Move forward 1 meter at 50% speed
 mosquitto_pub -h localhost -t 'orchestrator/cmd/left_motor' \
@@ -131,6 +146,7 @@ mosquitto_pub -h localhost -t 'orchestrator/cmd/left_motor' \
 ```
 
 ### Monitor Telemetry
+
 ```bash
 # Subscribe to all telemetry data
 mosquitto_sub -h localhost -t 'orchestrator/data/+'
@@ -143,6 +159,7 @@ mosquitto_sub -h localhost -t 'orchestrator/data/lidar_01'
 ```
 
 ### Python Integration
+
 ```python
 import paho.mqtt.client as mqtt
 import json
@@ -172,29 +189,33 @@ client.subscribe("orchestrator/data/+")
 client.loop_forever()
 ```
 
-## 🛠️ Development Setup
+## Development Setup
 
 ### For UI Development
+
 1. **Start Mock HAL**: `python3 demos/standalone_demo.py`
 2. **Connect your UI** to MQTT topics listed above
 3. **Send commands** and **receive telemetry** in real-time
 4. **Test safety features** with emergency stop commands
 
 ### For Node-RED Development
+
 1. **Install Node-RED**: `npm install -g node-red`
 2. **Start Node-RED**: `node-red --userDir configs/node_red_config`
 3. **Access Flow Editor**: http://localhost:1880
 4. **Access Dashboard**: http://localhost:1880/ui
 
 ### For Python Development
+
 1. **Import mock components**: `from hal_service.mock import MockHALOrchestrator`
 2. **Create orchestrator**: `orchestrator = MockHALOrchestrator()`
 3. **Initialize system**: `orchestrator.initialize()`
 4. **Send commands**: `orchestrator.inject_command(device, command)`
 
-## 📊 System Features
+## System Features
 
-### ✅ What's Working
+### What's Working
+
 - **Mock Motor Controllers** - Realistic motor behavior simulation
 - **Encoder Simulation** - Tick counting with noise and backlash
 - **LiDAR Scanning** - 360° obstacle detection with ray-casting
@@ -204,7 +225,8 @@ client.loop_forever()
 - **Real-time Telemetry** - Live sensor data streaming
 - **Command Processing** - Motor commands with acknowledgments
 
-### 🎯 Use Cases
+### Use Cases
+
 - **UI Development** - Build dashboards without hardware
 - **Control Logic Testing** - Test algorithms with realistic data
 - **Integration Testing** - Validate MQTT communication
@@ -217,18 +239,19 @@ client.loop_forever()
 ### Common Issues
 
 1. **"No module named 'pydantic'" Error**
+
    - **Solution**: Use `demos/standalone_demo.py` instead of full system
    - **Alternative**: Install in virtual environment
-
 2. **MQTT Connection Failed**
+
    - **Check**: Mock HAL is running
    - **Solution**: Use built-in mock MQTT (no external broker needed)
-
 3. **Node-RED Not Found**
+
    - **Install**: `npm install -g node-red`
    - **Alternative**: Use simple web dashboard or static HTML
-
 4. **Port Already in Use**
+
    - **Check**: `netstat -tulpn | grep :1880`
    - **Solution**: Kill existing process or use different port
 
@@ -239,7 +262,7 @@ client.loop_forever()
 3. **Test MQTT** with `mosquitto_pub` and `mosquitto_sub`
 4. **Review documentation** in `hal_service/mock/README.md`
 
-## 📁 File Structure
+## File Structure
 
 ```
 orchestrator-platform/
@@ -260,17 +283,18 @@ orchestrator-platform/
     └── start-nodered.sh            # Node-RED startup script
 ```
 
-## 🎉 Success! System Ready
+## Success! System Ready
 
 The Orchestrator Platform Mock HAL is now fully operational and ready for:
 
 - ✅ **UI/Dashboard Development**
-- ✅ **Control Algorithm Testing** 
+- ✅ **Control Algorithm Testing**
 - ✅ **MQTT Integration**
 - ✅ **System Demonstration**
 - ✅ **Training and Education**
 
 **Next Steps:**
+
 1. Open `docs/orchestrator_dashboard.html` in your browser
 2. Run `python3 demos/standalone_demo.py` to see the system in action
 3. Start building your UI using the MQTT interface

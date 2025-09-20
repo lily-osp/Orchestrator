@@ -109,7 +109,7 @@ class MotorController(Actuator):
 #### Command Message Format
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "command_id": "uuid-string",
   "action": "move_forward|stop|rotate|grip",
   "parameters": {
@@ -123,7 +123,7 @@ class MotorController(Actuator):
 #### Telemetry Message Format
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "device_id": "lidar_01",
   "data": {
     "ranges": [1.2, 1.5, 0.8, 2.1],
@@ -136,7 +136,7 @@ class MotorController(Actuator):
 #### Status Message Format
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "subsystem": "robot",
   "status": "active|idle|error|emergency_stop",
   "position": {"x": 10.5, "y": 5.2, "heading": 90},

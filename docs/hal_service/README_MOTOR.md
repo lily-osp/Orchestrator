@@ -57,7 +57,7 @@ Commands are sent as JSON messages:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "command_id": "unique-command-id",
   "action": "move_forward|move_backward|rotate_left|rotate_right|stop|set_speed",
   "parameters": {
@@ -133,7 +133,7 @@ Motor telemetry is published continuously:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "device_id": "left_motor",
   "data": {
     "motor_id": "left_motor",

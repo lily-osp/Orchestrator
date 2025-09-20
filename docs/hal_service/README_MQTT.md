@@ -100,7 +100,7 @@ All messages use JSON format with automatic timestamp addition:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "device_id": "lidar_01",
   "data": {
     "ranges": [1.2, 1.5, 0.8, 2.1],

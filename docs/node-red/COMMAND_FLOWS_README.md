@@ -74,7 +74,7 @@ All commands follow a standardized JSON format:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "command_id": "unique-message-id",
   "action": "move_forward",
   "parameters": {
@@ -88,7 +88,7 @@ All commands follow a standardized JSON format:
 ### Emergency Stop Format:
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z", 
+  "timestamp": "2025-01-15T10:30:00Z", 
   "command_id": "unique-message-id",
   "action": "emergency_stop",
   "reason": "user_initiated",

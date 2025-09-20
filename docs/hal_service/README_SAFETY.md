@@ -86,7 +86,7 @@ safety:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "command_id": "safety_estop_1642248600",
   "action": "emergency_stop",
   "reason": "obstacle_detected",
@@ -108,7 +108,7 @@ safety:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "device_id": "safety_monitor",
   "status": "monitoring",
   "message": "Safety monitor active",
@@ -215,10 +215,10 @@ python safety_monitor_service.py --log-level DEBUG
 3. **Publish test LiDAR data**:
 ```bash
 # Safe data
-mosquitto_pub -t "orchestrator/data/lidar_01" -m '{"data": {"ranges": [2.0, 2.0, 2.0], "angles": [0, 90, 180], "timestamp": "2024-01-15T10:30:00Z"}}'
+mosquitto_pub -t "orchestrator/data/lidar_01" -m '{"data": {"ranges": [2.0, 2.0, 2.0], "angles": [0, 90, 180], "timestamp": "2025-01-15T10:30:00Z"}}'
 
 # Critical obstacle
-mosquitto_pub -t "orchestrator/data/lidar_01" -m '{"data": {"ranges": [0.3, 2.0, 2.0], "angles": [0, 90, 180], "timestamp": "2024-01-15T10:30:00Z"}}'
+mosquitto_pub -t "orchestrator/data/lidar_01" -m '{"data": {"ranges": [0.3, 2.0, 2.0], "angles": [0, 90, 180], "timestamp": "2025-01-15T10:30:00Z"}}'
 ```
 
 4. **Monitor emergency stops**:

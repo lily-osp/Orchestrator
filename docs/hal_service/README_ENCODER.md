@@ -104,7 +104,7 @@ The encoder publishes the following data structure via MQTT:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "device_id": "left_encoder",
   "data": {
     "tick_count": 1500,

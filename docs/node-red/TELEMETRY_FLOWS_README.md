@@ -49,7 +49,7 @@ The telemetry system is organized into several key components:
 **Expected Data Format**:
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "ranges": [1.2, 1.5, 0.8, 2.1, ...],
   "angles": [0, 1, 2, 3, ...],
   "min_range": 0.1,
@@ -75,7 +75,7 @@ The telemetry system is organized into several key components:
 **Expected Data Format**:
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "left_count": 1250,
   "right_count": 1248,
   "distance_traveled": 5.2,
@@ -105,7 +105,7 @@ The telemetry system is organized into several key components:
 **Expected Data Format**:
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "status": "active",
   "position": {
     "x": 10.5,
@@ -135,7 +135,7 @@ The telemetry system is organized into several key components:
 **Expected Data Format**:
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "status": "active",
   "obstacle_detected": false,
   "min_distance": 1.5,
@@ -163,7 +163,7 @@ The telemetry system is organized into several key components:
 **Expected Data Format**:
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "status": "active",
   "component": "hal_service",
   "uptime": 3600,
@@ -280,7 +280,7 @@ To test the telemetry flows:
 #### LiDAR Test Data
 ```bash
 mosquitto_pub -h localhost -t "orchestrator/data/lidar" -m '{
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "ranges": [1.2, 1.5, 0.8, 2.1, 3.0, 1.8],
   "angles": [0, 60, 120, 180, 240, 300],
   "min_range": 0.1,
@@ -291,7 +291,7 @@ mosquitto_pub -h localhost -t "orchestrator/data/lidar" -m '{
 #### Robot Status Test Data
 ```bash
 mosquitto_pub -h localhost -t "orchestrator/status/robot" -m '{
-  "timestamp": "2024-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",
   "status": "active",
   "position": {"x": 10.5, "y": 5.2, "heading": 90.0},
   "mission": "in_progress"

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orchestrator Platform - Modular Robotics Control System</title>
+    <meta name="description" content="A comprehensive robotics control platform with 4-layer architecture, hardware abstraction, safety monitoring, and visual programming capabilities.">
+    <meta name="keywords" content="robotics, control system, hardware abstraction, MQTT, Node-RED, Raspberry Pi, safety monitoring">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Orchestrator Platform - Modular Robotics Control System">
+    <meta property="og:description" content="A comprehensive robotics control platform with 4-layer architecture, hardware abstraction, safety monitoring, and visual programming capabilities.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://orchestrator-platform.com">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo"><i class="fas fa-robot"></i> Orchestrator</a>
+            <ul class="nav-links">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#components">Components</a></li>
+                <li><a href="#benefits">Benefits</a></li>
+                <li><a href="#use-cases">Use Cases</a></li>
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#documentation">Documentation</a></li>
+                <li><a href="#tech-stack">Technology</a></li>
+            </ul>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content animate-fade-in-up">
+                <h1>Orchestrator Platform</h1>
+                <p class="subtitle">
+                    A modular robotics control system with 4-layer architecture for flexible hardware abstraction, 
+                    safety monitoring, and visual programming capabilities.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#getting-started" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i> Get Started
+                    </a>
+                    <a href="#documentation" class="btn btn-secondary">
+                        <i class="fas fa-book"></i> Documentation
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Layer Architecture</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Safety Coverage</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">8+</span>
+                        <span class="stat-label">Core Components</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">MQTT</span>
+                        <span class="stat-label">Real-time Communication</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Node-RED</span>
+                        <span class="stat-label">Visual Programming</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Python</span>
+                        <span class="stat-label">Robust Backend</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Platform Overview</h2>
+                <p class="section-subtitle">
+                    The Orchestrator Platform is a comprehensive robotics control system designed for flexibility, 
+                    reliability, and ease of use. Built with modern software engineering principles, it provides 
+                    a robust foundation for building and controlling robotic systems of any scale.
+                </p>
+            </div>
+            <div class="overview-content">
+                <div class="overview-text">
+                    <h3>Why Choose Orchestrator?</h3>
+                    <p>
+                        The Orchestrator Platform addresses the common challenges in robotics development by providing 
+                        a unified, modular approach to robot control. Whether you're building a simple mobile robot 
+                        or a complex multi-robot system, our platform scales to meet your needs.
+                    </p>
+                    <ul class="overview-list">
+                        <li><i class="fas fa-check-circle"></i> <strong>Modular Design:</strong> Mix and match components to build exactly what you need</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Safety First:</strong> Multi-layered safety systems ensure reliable operation</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Visual Programming:</strong> Create complex behaviors without writing code</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Real-time Communication:</strong> Low-latency MQTT messaging for responsive control</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Hardware Agnostic:</strong> Works with any hardware that supports standard interfaces</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Production Ready:</strong> Comprehensive testing and deployment tools</li>
+                    </ul>
+                </div>
+                <div class="overview-image">
+                    <div class="platform-diagram">
+                        <div class="diagram-layer">
+                            <i class="fas fa-desktop"></i>
+                            <span>Web Dashboard</span>
+                        </div>
+                        <div class="diagram-layer">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>Node-RED Flows</span>
+                        </div>
+                        <div class="diagram-layer">
+                            <i class="fas fa-broadcast-tower"></i>
+                            <span>MQTT Broker</span>
+                        </div>
+                        <div class="diagram-layer">
+                            <i class="fas fa-cogs"></i>
+                            <span>HAL Services</span>
+                        </div>
+                        <div class="diagram-layer">
+                            <i class="fas fa-microchip"></i>
+                            <span>Hardware</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Key Features</h2>
+                <p class="section-subtitle">
+                    Comprehensive robotics control platform with enterprise-grade features
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+                    <h3 class="feature-title">Hardware Abstraction Layer</h3>
+                    <p class="feature-description">
+                        Unified interface for sensors, actuators, and communication with pluggable components 
+                        and extensible architecture for maximum flexibility.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="feature-title">Multi-layered Safety System</h3>
+                    <p class="feature-description">
+                        Hardware and software safety checks with emergency stops, obstacle detection, 
+                        watchdog timers, and real-time monitoring for maximum reliability.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-broadcast-tower"></i></div>
+                    <h3 class="feature-title">MQTT Communication</h3>
+                    <p class="feature-description">
+                        Real-time messaging with hierarchical topic structure, configurable QoS levels, 
+                        and retained messages for seamless integration and control.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+                    <h3 class="feature-title">Visual Programming</h3>
+                    <p class="feature-description">
+                        Node-RED integration for flow-based programming with intuitive dashboards, 
+                        mission sequencers, and real-time telemetry visualization.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-database"></i></div>
+                    <h3 class="feature-title">State Management</h3>
+                    <p class="feature-description">
+                        Centralized state persistence with atomic writes, MQTT-based synchronization, 
+                        schema validation, and automatic recovery capabilities.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-flask"></i></div>
+                    <h3 class="feature-title">Comprehensive Testing</h3>
+                    <p class="feature-description">
+                        Unit, integration, and functional test coverage with mock hardware simulation 
+                        and continuous integration support for reliable development.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="section architecture">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">System Architecture</h2>
+                <p class="section-subtitle">
+                    Clean 4-layer architecture designed for flexibility and maintainability
+                </p>
+            </div>
+            <div class="architecture-diagram">
+                <div class="layer ui">
+                    <div class="layer-title">Layer 4: Control & UI Layer</div>
+                    <div class="layer-description">
+                        Node-RED flows, web dashboards, mobile interfaces, and visual programming tools
+                    </div>
+                </div>
+                <div class="layer control">
+                    <div class="layer-title">Layer 3: Communication Layer</div>
+                    <div class="layer-description">
+                        MQTT broker, message routing, topic management, and real-time messaging
+                    </div>
+                </div>
+                <div class="layer communication">
+                    <div class="layer-title">Layer 2: Hardware Abstraction Layer</div>
+                    <div class="layer-description">
+                        Python HAL services, safety monitoring, state management, and logging
+                    </div>
+                </div>
+                <div class="layer hal">
+                    <div class="layer-title">Layer 1: Physical Hardware</div>
+                    <div class="layer-description">
+                        Raspberry Pi, sensors (encoders, LIDAR), actuators (motors), and GPIO interfaces
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Components Section -->
+    <section id="components" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Core Components</h2>
+                <p class="section-subtitle">
+                    Modular components for complete robotics control
+                </p>
+            </div>
+            <div class="components-grid">
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-motorcycle"></i></div>
+                    <div class="component-name">Motor Controllers</div>
+                    <div class="component-description">PWM motor control with safety limits</div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <div class="component-name">Encoder Sensors</div>
+                    <div class="component-description">Rotary encoder interface with position tracking</div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-satellite-dish"></i></div>
+                    <div class="component-name">LIDAR Sensors</div>
+                    <div class="component-description">Distance measurement and obstacle detection</div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="component-name">Safety Monitor</div>
+                    <div class="component-description">Real-time safety checking and emergency stops</div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-database"></i></div>
+                    <div class="component-name">State Manager</div>
+                    <div class="component-description">State persistence and synchronization</div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="component-name">Logging Service</div>
+                    <div class="component-description">Centralized logging with rotation</div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-wifi"></i></div>
+                    <div class="component-name">MQTT Client</div>
+                    <div class="component-description">Pub/sub messaging with auto-reconnection</div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-cog"></i></div>
+                    <div class="component-name">Configuration</div>
+                    <div class="component-description">YAML-based configuration management</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Getting Started Section -->
+    <section id="getting-started" class="section getting-started">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Getting Started</h2>
+                <p class="section-subtitle">
+                    Quick setup guide to get your robotics platform running
+                </p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Clone and Install</h3>
+                        <p>Get the latest version and set up your environment</p>
+                        <div class="code-block">
+git clone &lt;repository-url&gt;
+cd orchestrator-platform
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Configure System Dependencies</h3>
+                        <p>Install MQTT broker and Node-RED for full functionality</p>
+                        <div class="code-block">
+sudo apt install mosquitto mosquitto-clients nodejs npm
+sudo npm install -g node-red node-red-dashboard
+sudo systemctl enable mosquitto
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Configure Hardware</h3>
+                        <p>Set up your hardware configuration and enable interfaces</p>
+                        <div class="code-block">
+cp configs/example_config.yaml configs/config.yaml
+# Edit configs/config.yaml with your hardware settings
+sudo raspi-config  # Enable I2C and SPI
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Start Services</h3>
+                        <p>Launch the core services and verify everything is working</p>
+                        <div class="code-block">
+python orchestrator_hal.py
+python safety_monitor_service.py
+python state_manager_service.py
+node-red  # Optional: Start Node-RED
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Access Web Interface</h3>
+                        <p>Open your browser and start controlling your robot</p>
+                        <div class="code-block">
+# Node-RED editor: http://localhost:1880
+# Dashboard: http://localhost:1880/ui
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h3>Verify Installation</h3>
+                        <p>Test your setup and run the demo to ensure everything works</p>
+                        <div class="code-block">
+# Run basic tests
+python run_tests.py
+
+# Run demo to verify setup
+python run_demo.py demo_mock_hal
+
+# Check system status
+python -c "from hal_service.config import ConfigurationService; print('Config loaded successfully')"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Documentation</h2>
+                <p class="section-subtitle">
+                    Comprehensive guides and references for all aspects of the platform
+                </p>
+            </div>
+            <div class="docs-grid">
+                <div class="doc-card">
+                    <h3 class="doc-title">User Guide</h3>
+                    <p class="doc-description">Complete guide for operating the robot via dashboard and control interfaces</p>
+                    <div class="doc-links">
+                        <a href="global/USER_GUIDE.md" class="doc-link">Read Guide</a>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 class="doc-title">MQTT Reference</h3>
+                    <p class="doc-description">Complete MQTT topic structure and message schemas for communication</p>
+                    <div class="doc-links">
+                        <a href="global/MQTT_REFERENCE.md" class="doc-link">API Reference</a>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 class="doc-title">HAL Components</h3>
+                    <p class="doc-description">Hardware abstraction layer components and interfaces</p>
+                    <div class="doc-links">
+                        <a href="hal_service/" class="doc-link">Components</a>
+                        <a href="hal_service/README_MOTOR.md" class="doc-link">Motors</a>
+                        <a href="hal_service/README_LIDAR.md" class="doc-link">LIDAR</a>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 class="doc-title">Node-RED Integration</h3>
+                    <p class="doc-description">Visual programming interface and dashboard implementation</p>
+                    <div class="doc-links">
+                        <a href="node-red/" class="doc-link">Node-RED Docs</a>
+                        <a href="global/node_red_config.md" class="doc-link">Setup Guide</a>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 class="doc-title">Deployment Guide</h3>
+                    <p class="doc-description">Installation, deployment, and system configuration</p>
+                    <div class="doc-links">
+                        <a href="global/DEPLOYMENT.md" class="doc-link">Deployment</a>
+                        <a href="global/SYSTEM_ACCESS_GUIDE.md" class="doc-link">System Access</a>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 class="doc-title">Development</h3>
+                    <p class="doc-description">Development tools, testing, and contribution guidelines</p>
+                    <div class="doc-links">
+                        <a href="mock-hal/" class="doc-link">Mock HAL</a>
+                        <a href="../README.md" class="doc-link">Main README</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="section benefits">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose Orchestrator?</h2>
+                <p class="section-subtitle">
+                    Discover the key advantages that make our platform the ideal choice for robotics development
+                </p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Rapid Development</h3>
+                    <p>Get your robot up and running in hours, not weeks. Our modular components and visual programming tools accelerate development cycles.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Enterprise Security</h3>
+                    <p>Built-in safety systems, secure communication protocols, and comprehensive error handling ensure reliable operation in production environments.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                    <h3>Scalable Architecture</h3>
+                    <p>Start with a single robot and scale to complex multi-robot systems. Our architecture grows with your needs without requiring rewrites.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-tools"></i></div>
+                    <h3>Easy Integration</h3>
+                    <p>Standard interfaces and protocols make it simple to integrate with existing systems, sensors, and third-party hardware.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-users"></i></div>
+                    <h3>Team Collaboration</h3>
+                    <p>Visual programming and clear documentation enable seamless collaboration between hardware engineers, software developers, and domain experts.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <h3>Cost Effective</h3>
+                    <p>Reduce development costs with reusable components, comprehensive testing tools, and deployment automation that minimizes operational overhead.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Use Cases & Applications</h2>
+                <p class="section-subtitle">
+                    The Orchestrator Platform is versatile enough to power a wide range of robotics applications
+                </p>
+            </div>
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon"><i class="fas fa-warehouse"></i></div>
+                    <h3>Industrial Automation</h3>
+                    <p>Automate warehouse operations, material handling, and manufacturing processes with reliable, scalable robot control systems.</p>
+                    <ul>
+                        <li>Automated Guided Vehicles (AGVs)</li>
+                        <li>Pick and place robots</li>
+                        <li>Quality inspection systems</li>
+                        <li>Assembly line automation</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon"><i class="fas fa-home"></i></div>
+                    <h3>Service Robotics</h3>
+                    <p>Build intelligent service robots for domestic, commercial, and healthcare applications with advanced navigation and interaction capabilities.</p>
+                    <ul>
+                        <li>Cleaning robots</li>
+                        <li>Security patrol robots</li>
+                        <li>Healthcare assistance robots</li>
+                        <li>Delivery robots</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>Education & Research</h3>
+                    <p>Perfect for educational institutions and research labs looking to teach robotics concepts and prototype new robotic systems.</p>
+                    <ul>
+                        <li>Robotics education platforms</li>
+                        <li>Research prototypes</li>
+                        <li>Student projects</li>
+                        <li>Algorithm development</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon"><i class="fas fa-seedling"></i></div>
+                    <h3>Agricultural Robotics</h3>
+                    <p>Develop precision agriculture robots for planting, monitoring, and harvesting with advanced sensor integration and autonomous navigation.</p>
+                    <ul>
+                        <li>Autonomous tractors</li>
+                        <li>Crop monitoring drones</li>
+                        <li>Precision planting systems</li>
+                        <li>Harvesting robots</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon"><i class="fas fa-ambulance"></i></div>
+                    <h3>Emergency Response</h3>
+                    <p>Deploy robots in hazardous environments for search and rescue, disaster response, and emergency monitoring with robust safety systems.</p>
+                    <ul>
+                        <li>Search and rescue robots</li>
+                        <li>Hazardous material handling</li>
+                        <li>Disaster assessment drones</li>
+                        <li>Emergency communication relays</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>Custom Applications</h3>
+                    <p>The modular architecture allows you to build custom robotic solutions for any specific application or industry requirement.</p>
+                    <ul>
+                        <li>Custom sensor integration</li>
+                        <li>Specialized actuators</li>
+                        <li>Industry-specific protocols</li>
+                        <li>Unique control algorithms</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack Section -->
+    <section id="tech-stack" class="section tech-stack">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Technology Stack</h2>
+                <p class="section-subtitle">
+                    Built with modern, reliable technologies for robust robotics control
+                </p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fab fa-python"></i></div>
+                    <div class="tech-name">Python 3.8+</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-broadcast-tower"></i></div>
+                    <div class="tech-name">MQTT</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-project-diagram"></i></div>
+                    <div class="tech-name">Node-RED</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-microchip"></i></div>
+                    <div class="tech-name">Raspberry Pi</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fab fa-docker"></i></div>
+                    <div class="tech-name">Docker</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-server"></i></div>
+                    <div class="tech-name">Ansible</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-flask"></i></div>
+                    <div class="tech-name">pytest</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-file-code"></i></div>
+                    <div class="tech-name">YAML</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#overview">Overview</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#architecture">Architecture</a></li>
+                        <li><a href="#components">Components</a></li>
+                        <li><a href="#use-cases">Use Cases</a></li>
+                        <li><a href="#getting-started">Getting Started</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Documentation</h3>
+                    <ul>
+                        <li><a href="global/USER_GUIDE.md">User Guide</a></li>
+                        <li><a href="global/MQTT_REFERENCE.md">MQTT Reference</a></li>
+                        <li><a href="global/DEPLOYMENT.md">Deployment</a></li>
+                        <li><a href="hal_service/">HAL Components</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Development</h3>
+                    <ul>
+                        <li><a href="../README.md">Main README</a></li>
+                        <li><a href="mock-hal/">Mock HAL</a></li>
+                        <li><a href="node-red/">Node-RED Docs</a></li>
+                        <li><a href="../tests/">Test Suite</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="global/SYSTEM_ACCESS_GUIDE.md">System Access</a></li>
+                        <li><a href="../README.md#troubleshooting">Troubleshooting</a></li>
+                        <li><a href="../README.md#contributing">Contributing</a></li>
+                        <li><a href="../README.md#support">Get Help</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Orchestrator Platform. Built with <i class="fas fa-heart" style="color: #ef4444;"></i> for the robotics community.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
