@@ -262,71 +262,73 @@
     </div>
 
     <script>
-        // Get the file parameter from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const file = urlParams.get('file');
-        
-        if (!file) {
-            document.getElementById('markdown-content').innerHTML = 
-                '<div class="error">No file specified. Please provide a file parameter in the URL.</div>';
-            document.getElementById('doc-title').textContent = 'Error';
-            return;
-        }
-        
-        // Set document title
-        const fileName = file.split('/').pop().replace('.md', '');
-        document.getElementById('doc-title').textContent = fileName.replace(/_/g, ' ');
-        document.title = `${fileName} - Orchestrator Platform Documentation`;
-        
-        // Load and render markdown file
-        fetch(file)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(markdown => {
-                // Configure marked options
-                marked.setOptions({
-                    highlight: function(code, lang) {
-                        if (lang && Prism.languages[lang]) {
-                            return Prism.highlight(code, Prism.languages[lang], lang);
-                        }
-                        return code;
-                    },
-                    breaks: true,
-                    gfm: true
-                });
-                
-                // Convert markdown to HTML
-                const html = marked.parse(markdown);
-                
-                // Insert into page
-                document.getElementById('markdown-content').innerHTML = html;
-                
-                // Generate table of contents
-                generateTOC();
-                
-                // Add smooth scrolling for internal links
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    });
-                });
-            })
-            .catch(error => {
-                console.error('Error loading markdown file:', error);
+        (function() {
+            // Get the file parameter from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const file = urlParams.get('file');
+            
+            if (!file) {
                 document.getElementById('markdown-content').innerHTML = 
-                    `<div class="error">Error loading file: ${error.message}</div>`;
-            });
+                    '<div class="error">No file specified. Please provide a file parameter in the URL.</div>';
+                document.getElementById('doc-title').textContent = 'Error';
+                return;
+            }
+            
+            // Set document title
+            const fileName = file.split('/').pop().replace('.md', '');
+            document.getElementById('doc-title').textContent = fileName.replace(/_/g, ' ');
+            document.title = `${fileName} - Orchestrator Platform Documentation`;
+            
+            // Load and render markdown file
+            fetch(file)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(markdown => {
+                    // Configure marked options
+                    marked.setOptions({
+                        highlight: function(code, lang) {
+                            if (lang && Prism.languages[lang]) {
+                                return Prism.highlight(code, Prism.languages[lang], lang);
+                            }
+                            return code;
+                        },
+                        breaks: true,
+                        gfm: true
+                    });
+                    
+                    // Convert markdown to HTML
+                    const html = marked.parse(markdown);
+                    
+                    // Insert into page
+                    document.getElementById('markdown-content').innerHTML = html;
+                    
+                    // Generate table of contents
+                    generateTOC();
+                    
+                    // Add smooth scrolling for internal links
+                    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                        anchor.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const target = document.querySelector(this.getAttribute('href'));
+                            if (target) {
+                                target.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading markdown file:', error);
+                    document.getElementById('markdown-content').innerHTML = 
+                        `<div class="error">Error loading file: ${error.message}</div>`;
+                });
+        })();
         
         function generateTOC() {
             const headings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3');
